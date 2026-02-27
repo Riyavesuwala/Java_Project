@@ -4,13 +4,15 @@
  */
 package EJB;
 
+import Entity.Users;
 import jakarta.ejb.Local;
 
 /**
  *
- * @author krishnaiya
+ * @author riya vesuwala
  */
 @Local
-public interface CitizenBeanLocal {
-    
+public interface UserBeanLocal {
+    public void registerUser(Users user);
+    public Users login(String username,String password);
 }
