@@ -15,35 +15,36 @@ import java.util.List;
 @Local
 public interface AdminBeanLocal {
     //Zone
-    public void createZone(Zone zone);
+    public void createZone(String zoneName, String status, Integer corporationId);
     public void updateZone(Integer zoneId,String zoneName,String status,Integer corporationId);
     public void deleteZone(Integer zoneId);
     
     //Department
-    public void createDepartment(Departments dept);
+    public void createDepartment(String departmentName,String description,String status);
     public void updateDepartment(Integer id, String name, String desc, String status);
     public void deleteDepartment(Integer id);
      
     //Officer
     
     //Society
-    public void createSociety(Society society);
+    public void createSociety(Integer wardId,String societyName,String address,String status);
     public void updateSociety(Integer id, String name, String address, String status, Integer wardId);
     public void deleteSociety(Integer id);
     
     //Complaint Category
-    public void addCategory(ComplaintCategory category);
+    public void createCategory(String categoryName,Integer departmentId);
     public void updateCategory(Integer id, String name, Integer departmentId);
     public void deleteCategory(Integer id);
+    
     // Ward Functionalities
-    public void createWard(int zoneId,String wardName,String status);
+    public void createWard(Integer zoneId,String wardName,String status);
     public void updateWard(int wardId,int zoneId,String wardName,String status);
     public void deleteWard(int wardId);
     
-//    Officer Functionalities
-    void createOfficer(int userId,int departmentId,int zoneId,int wardId,String designation);
-    void updateOfficer(int officerId,int userId,int departmentId,int zoneId,int wardId,String designation);
-    void deleteOfficer(int officerId);
+    // Officer Functionalities
+    public void createOfficer(Integer userId,Integer departmentId,Integer zoneId,Integer wardId,String designation);
+    public void updateOfficer(int officerId,int userId,int departmentId,int zoneId,int wardId,String designation);
+    public void deleteOfficer(int officerId);
     
     //SLA Functionality
     void addSlaRules(Integer categoryId,Integer maxDays); 
