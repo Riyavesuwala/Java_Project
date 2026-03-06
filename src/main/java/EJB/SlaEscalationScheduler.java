@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Singleton
 @LocalBean
-@Startup
+//@Startup
 public class SlaEscalationScheduler {
 
     @PersistenceContext(unitName = "jpu1")

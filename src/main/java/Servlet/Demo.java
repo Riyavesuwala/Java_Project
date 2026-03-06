@@ -46,6 +46,8 @@ public class Demo extends HttpServlet {
     private ComplaintBeanLocal complaintBean;
     @EJB
     private OfficerBeanLocal officerBean;
+    @EJB
+    private UserBeanLocal userBean;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -238,8 +240,33 @@ public class Demo extends HttpServlet {
 //        adminBean.updateSlaRule(1,1);
 //        adminBean.deleteSlaRule(1);
 
-          officerBean.updateComplaintStatus(9, "RESOLVED",2);
+//          officerBean.updateComplaintStatus(9, "RESOLVED",2);
+//          complaintBean.createComplaintReply(9, 1, "Escalated to Corporation");
+//            Users user=userBean.getUserById(2);
+//            System.out.println(user.getEmail());
+//            System.out.println(user);
+//            Officers officer=officerBean.getOfficerProfile(3);
+//            Users user=officer.getUserId();
+//            
+//            System.out.println("Email "+user.getEmail());
+//            
+//            if(officer.getDepartmentId()!=null){
+//                System.out.println("Department "+officer.getDepartmentId().getDepartmentName());
+//            }
+//            if(officer.getWardId()!=null){
+//                System.out.println("Ward "+officer.getWardId().getWardName());
+//            }
+//            if(officer.getZoneId()!=null){
+//                System.out.println("Zone "+officer.getZoneId().getZoneName());
+//            }
 
+              // Display Designation wise Complaint based on the officer ID
+              List<Complaint> complaints=officerBean.getComplaintByOfficer(3);
+              for(Complaint c: complaints){
+//                  System.out.println(c.getTitle() + c.getDescription()); 
+                    System.out.println(c.getComplaintId());            
+
+              }
     }
 
     /**

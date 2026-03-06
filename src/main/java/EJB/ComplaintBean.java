@@ -6,6 +6,7 @@ package EJB;
 
 import Entity.Complaint;
 import Entity.ComplaintCategory;
+import Entity.ComplaintReply;
 import Entity.ComplaintStatusHistory;
 import Entity.Departments;
 import Entity.Officers;
@@ -158,6 +159,21 @@ public class ComplaintBean implements ComplaintBeanLocal {
         history.setChangedAt(LocalDateTime.now());
         
         em.persist(history);
+    }
+
+    @Override
+    public void createComplaintReply(int complaint_id, int replied_by, String message) {
+        Complaint complaint=em.find(Complaint.class,complaint_id);
+        Users user=em.find(Users.class,replied_by);
+        
+        ComplaintReply reply=new ComplaintReply();
+        reply.setComplaintId(complaint);
+        reply.setRepliedBy(user);
+        reply.setMessage(message);
+        reply.setRepliedAt(LocalDateTime.now());
+        
+        em.persist(reply);
+        System.out.println(reply);
     }
 
 }

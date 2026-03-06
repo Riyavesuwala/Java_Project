@@ -7,6 +7,7 @@ package EJB;
 import Entity.Complaint;
 import Entity.Users;
 import jakarta.ejb.Local;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -31,4 +32,7 @@ public interface ComplaintBeanLocal {
     
     // Complaint_Status_History Functionality
     void createComplaintStatusHistory(Complaint complaint,String old_status,String new_status,Users changed_by);
+    
+    //complaint reply
+    void createComplaintReply(int complaint_id,int replied_by,String message);
 }

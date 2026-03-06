@@ -5,6 +5,7 @@
 package EJB;
 
 import Entity.Complaint;
+import Entity.Officers;
 import Entity.Users;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -47,5 +48,47 @@ public class OfficerBean implements OfficerBeanLocal {
             
             em.merge(c);
         }
+    }
+
+    @Override
+    public Officers getOfficerProfile(int userId) {
+        Users user = em.find(Users.class, userId);
+
+    if (user == null) return null;
+
+    return em.createQuery(
+            "SELECT o FROM Officers o WHERE o.userId = :user",
+            Officers.class)
+            .setParameter("user", user)
+            .getSingleResult();
+    }
+
+    @Override
+    public List<Complaint> getComplaintByOfficer(int officerId) {
+        Officers officer=em.find(Officers.class,officerId);
+        
+        if(officer == null){
+            return null;
+        }
+        String designation = officer.getDesignation();
+        
+        //WARD OFFICER
+        if(designation.equalsIgnoreCase("WARD")){
+            return em.createQuery("SELECT c FROM Complaint c WHERE c.wardId = :ward",
+                    Complaint.class).setParameter("ward",officer.getWardId())
+                    .getResultList();
+        }
+        //ZONE OFFICER
+        else if(designation.equalsIgnoreCase("ZONE")){
+            return em.createQuery("SELECT c FROM Complaint c WHERE c.zoneId = :zone",
+                    Complaint.class)
+                    .setParameter("zone", officer.getZoneId())
+                    .getResultList();                
+        }
+        else if(designation.equalsIgnoreCase("CORPORATE")){
+            return em.createQuery("SELECT c FROM Complaint c",Complaint.class)
+                    .getResultList();
+        }
+     return null;
     }
 }
