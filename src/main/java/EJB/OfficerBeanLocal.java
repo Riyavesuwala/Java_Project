@@ -5,6 +5,7 @@
 package EJB;
 
 import Entity.Complaint;
+import Entity.Officers;
 import jakarta.ejb.Local;
 import java.util.List;
 
@@ -15,5 +16,7 @@ import java.util.List;
 @Local
 public interface OfficerBeanLocal {
     List<Complaint> getAssignedComplaint(int officerId);
-    void updateComplaintStatus(int complaintId,String status);
+    void updateComplaintStatus(int complaintId,String status,int logedInUser);
+    Officers getOfficerProfile(int userId);
+    List<Complaint> getComplaintByOfficer(int officerId);
 }

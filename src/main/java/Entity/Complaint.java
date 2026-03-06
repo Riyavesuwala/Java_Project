@@ -4,7 +4,7 @@
  */
 package Entity;
 
-import com.mycompany.grievancesystem.*;
+//import com.mycompany.grievancesystem.*;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +21,7 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.time.LocalDateTime;
 
@@ -60,7 +61,7 @@ public class Complaint implements Serializable {
     private String status;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @Column(name = "due_date")
+    @Column(name = "due_Date")
     private LocalDateTime dueDate;
     @OneToMany(mappedBy = "complaintId")
     private Collection<ComplaintStatusHistory> complaintStatusHistoryCollection;
@@ -135,13 +136,11 @@ public class Complaint implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
-    
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt=createdAt ;
+    }
     public LocalDateTime getCreatedAt() {
         return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public LocalDateTime getDueDate() {
@@ -260,5 +259,5 @@ public class Complaint implements Serializable {
     public String toString() {
         return "com.mycompany.grievancesystem.Complaint[ complaintId=" + complaintId + " ]";
     }
-    
+
 }

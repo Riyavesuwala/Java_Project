@@ -21,6 +21,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -47,8 +48,8 @@ public class ComplaintReply implements Serializable {
     @Column(name = "message")
     private String message;
     @Column(name = "replied_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date repliedAt;
+    
+    private LocalDateTime repliedAt;
     @JoinColumn(name = "complaint_id", referencedColumnName = "complaint_id")
     @ManyToOne
     private Complaint complaintId;
@@ -79,11 +80,11 @@ public class ComplaintReply implements Serializable {
         this.message = message;
     }
 
-    public Date getRepliedAt() {
+    public LocalDateTime getRepliedAt() {
         return repliedAt;
     }
 
-    public void setRepliedAt(Date repliedAt) {
+    public void setRepliedAt(LocalDateTime repliedAt) {
         this.repliedAt = repliedAt;
     }
 

@@ -168,9 +168,11 @@ public class Demo extends HttpServlet {
 //          adminBean.createWard(2,"Udhna", "Active");
 //          adminBean.updateWard(1, 1, "ABC", "inactive");
 //          adminBean.deleteWard(1);
-//          adminBean.createOfficer(1, 1, 1,1, "ABC");
+//          adminBean.createOfficer(1, 1, 2,1, "ZONE");
+//          adminBean.createOfficer(1, 1, 2,1, "WARD");
 //          adminBean.updateOfficer(1, 0, 0, 0, 0, "JJ");
 //          adminBean.deleteOfficer(1);
+//        complaintBean.createComplaint(2, 2, 2, 3, 1, "Garbage remove", "Garbage remove", "ACTIVE","High");
         complaintBean.createComplaint(
                 6,   // citizen user
                 1,   // category
@@ -199,10 +201,37 @@ public class Demo extends HttpServlet {
 //        }
 //        officerBean.updateComplaintStatus(4, "Processing");
        
-        adminBean.addSlaRules(2,2);
-        adminBean.updateSlaRule(1,1);
-        adminBean.deleteSlaRule(1);
+//        adminBean.addSlaRules(2,2);
+//        adminBean.updateSlaRule(1,1);
+//        adminBean.deleteSlaRule(1);
 
+//          officerBean.updateComplaintStatus(9, "RESOLVED",2);
+//          complaintBean.createComplaintReply(9, 1, "Escalated to Corporation");
+//            Users user=userBean.getUserById(2);
+//            System.out.println(user.getEmail());
+//            System.out.println(user);
+//            Officers officer=officerBean.getOfficerProfile(3);
+//            Users user=officer.getUserId();
+//            
+//            System.out.println("Email "+user.getEmail());
+//            
+//            if(officer.getDepartmentId()!=null){
+//                System.out.println("Department "+officer.getDepartmentId().getDepartmentName());
+//            }
+//            if(officer.getWardId()!=null){
+//                System.out.println("Ward "+officer.getWardId().getWardName());
+//            }
+//            if(officer.getZoneId()!=null){
+//                System.out.println("Zone "+officer.getZoneId().getZoneName());
+//            }
+
+              // Display Designation wise Complaint based on the officer ID
+              List<Complaint> complaints=officerBean.getComplaintByOfficer(3);
+              for(Complaint c: complaints){
+//                  System.out.println(c.getTitle() + c.getDescription()); 
+                    System.out.println(c.getComplaintId());            
+
+              }
     }
 
     /**

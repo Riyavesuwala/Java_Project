@@ -44,5 +44,14 @@ public class UserBean implements UserBeanLocal {
         }
     }
 
+    @Override
+    public Users getUserById(int userId) {
+        
+        Users user=em.find(Users.class, userId);
+        if(user == null){
+            System.out.println("User not found");
+        }
+        return user;
+    }
     
 }

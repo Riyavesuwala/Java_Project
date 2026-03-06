@@ -6,8 +6,11 @@ package EJB;
 
 import Entity.Complaint;
 import Entity.ComplaintCategory;
+import Entity.ComplaintReply;
+import Entity.ComplaintStatusHistory;
 import Entity.Departments;
 import Entity.Officers;
+import Entity.SlaRules;
 import Entity.Society;
 import Entity.Users;
 import Entity.Ward;
@@ -16,6 +19,7 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,8 +30,11 @@ import java.util.logging.Logger;
  */
 @Stateless
 public class ComplaintBean implements ComplaintBeanLocal {
-    @PersistenceContext(unitName="jpu1")
+
+    @PersistenceContext(unitName = "jpu1")
     EntityManager em;
+
+    @Override
     @EJB
     NotificationBeanLocal notifyBean;
     
@@ -39,7 +46,8 @@ public class ComplaintBean implements ComplaintBeanLocal {
             Integer zoneId,
             String title,
             String description,
-            String status) {
+            String status,
+            String priority) {
 
         try {
             Users user = em.find(Users.class, userId);
@@ -51,16 +59,36 @@ public class ComplaintBean implements ComplaintBeanLocal {
             if (user == null || category == null || society == null || ward == null || zone == null) {
                 throw new Exception("Invalid foreign key while creating complaint");
             }
+            SlaRules sla = em.createQuery(
+                    "SELECT s FROM SlaRules s WHERE s.categoryId.categoryId=:catId",
+                    SlaRules.class
+            ).setParameter("catId", categoryId)
+                    .setMaxResults(1)
+                    .getSingleResult();
+
+            if (sla == null) {
+                throw new RuntimeException("No SLA rule found for category");
+            }
+
+            // Count the due_date
+            LocalDateTime now=LocalDateTime.now();
+            LocalDateTime dueDate=now.plusHours(sla.getMaxResolutionDays());
+            
             Complaint complaint = new Complaint();
             complaint.setCitizenId(user);
             complaint.setCategoryId(category);
             complaint.setSocietyId(society);
             complaint.setWardId(ward);
             complaint.setZoneId(zone);
+            complaint.setDueDate(dueDate);
+            complaint.setCreatedAt(now);
+            
 
             complaint.setTitle(title);
             complaint.setDescription(description);
             complaint.setStatus(status);
+            complaint.setPriority(priority);
+
             complaint.setCreatedAt(java.time.LocalDateTime.now());
             complaint.setDueDate(java.time.LocalDateTime.now().plusDays(3));
             
@@ -125,10 +153,39 @@ public class ComplaintBean implements ComplaintBeanLocal {
 
     @Override
     public List<Object[]> getComplaintByUserId(Integer userId) {
-        
-        return em.createQuery("SELECT c.title,o.designation,c.status FROM Complaint c LEFT JOIN c.assignedOfficerId o WHERE c.citizenId.userId = :userId",Object[].class)
+
+        return em.createQuery("SELECT c.title,o.designation,c.status FROM Complaint c LEFT JOIN c.assignedOfficerId o WHERE c.citizenId.userId = :userId", Object[].class)
                 .setParameter("userId", userId)
                 .getResultList();
     }
- 
+
+    // Complaint_status_history Functionality
+    
+    @Override
+    public void createComplaintStatusHistory(Complaint complaint, String old_status, String new_status, Users changed_by) {
+        ComplaintStatusHistory history=new ComplaintStatusHistory();
+        history.setComplaintId(complaint);
+        history.setOldStatus(old_status);
+        history.setNewStatus(new_status);
+        history.setChangedBy(changed_by);
+        history.setChangedAt(LocalDateTime.now());
+        
+        em.persist(history);
+    }
+
+    @Override
+    public void createComplaintReply(int complaint_id, int replied_by, String message) {
+        Complaint complaint=em.find(Complaint.class,complaint_id);
+        Users user=em.find(Users.class,replied_by);
+        
+        ComplaintReply reply=new ComplaintReply();
+        reply.setComplaintId(complaint);
+        reply.setRepliedBy(user);
+        reply.setMessage(message);
+        reply.setRepliedAt(LocalDateTime.now());
+        
+        em.persist(reply);
+        System.out.println(reply);
+    }
+
 }
