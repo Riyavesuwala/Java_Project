@@ -23,10 +23,20 @@ public class AdminBean implements AdminBeanLocal {
     EntityManager em;
 
     @Override
-    public void createZone(Zone zone) {
+    public void createZone(String zoneName,String status,Integer corporationId) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         try {
+            Zone zone = new Zone();
+            zone.setZoneName(zoneName);
+            zone.setStatus(status);
+
+            Corporation corp =
+                    em.find(Corporation.class, corporationId);
+
+            zone.setCorporationId(corp);
+
             em.persist(zone);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -63,10 +73,20 @@ public class AdminBean implements AdminBeanLocal {
     }
 
     @Override
-    public void createDepartment(Departments dept) {
+    public void createDepartment(String departmentName,String description,String status) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         try {
+
+            Departments dept = new Departments();
+
+            dept.setDepartmentName(departmentName);
+            dept.setDescription(description);
+            dept.setStatus(status);
+
             em.persist(dept);
+
+            System.out.println("Department Added Successfully");
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,10 +122,21 @@ public class AdminBean implements AdminBeanLocal {
     }
 
     @Override
-    public void createSociety(Society society) {
+    public void createSociety(Integer wardId,String societyName,String address,String status) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        try {
-            em.persist(society);
+         try {
+
+            Society s = new Society();
+
+            s.setSocietyName(societyName);
+            s.setAddress(address);
+            s.setStatus(status);
+
+            Ward ward = em.find(Ward.class, wardId);
+            s.setWardId(ward);
+
+            em.persist(s);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -146,10 +177,21 @@ public class AdminBean implements AdminBeanLocal {
     }
 
     @Override
-    public void addCategory(ComplaintCategory category) {
+    public void createCategory(String categoryName,Integer departmentId) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         try {
-            em.persist(category);
+
+            ComplaintCategory c = new ComplaintCategory();
+
+            c.setCategoryName(categoryName);
+
+            Departments dept =
+                    em.find(Departments.class, departmentId);
+
+            c.setDepartmentId(dept);
+
+            em.persist(c);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -190,7 +232,7 @@ public class AdminBean implements AdminBeanLocal {
 
     // Ward functionalities
     @Override
-    public void createWard(int zoneId, String wardName, String status) {
+    public void createWard(Integer zoneId, String wardName, String status) {
 
         Zone zone = em.find(Zone.class, zoneId);
 
@@ -247,7 +289,7 @@ public class AdminBean implements AdminBeanLocal {
 
     // Officer Functionalities
     @Override
-    public void createOfficer(int userId, int departmentId, int zoneId, int wardId, String designation) {
+    public void createOfficer(Integer userId, Integer departmentId, Integer zoneId, Integer wardId, String designation) {
         Users user = em.find(Users.class, userId);
         Departments department = em.find(Departments.class, departmentId);
         Zone zone = em.find(Zone.class, zoneId);
