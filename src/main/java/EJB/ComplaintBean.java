@@ -34,7 +34,6 @@ public class ComplaintBean implements ComplaintBeanLocal {
     @PersistenceContext(unitName = "jpu1")
     EntityManager em;
 
-    @Override
     @EJB
     NotificationBeanLocal notifyBean;
     

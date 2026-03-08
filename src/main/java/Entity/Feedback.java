@@ -4,7 +4,6 @@
  */
 package Entity;
 
-import com.mycompany.grievancesystem.*;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

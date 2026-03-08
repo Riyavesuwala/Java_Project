@@ -173,15 +173,15 @@ public class Demo extends HttpServlet {
 //          adminBean.updateOfficer(1, 0, 0, 0, 0, "JJ");
 //          adminBean.deleteOfficer(1);
 //        complaintBean.createComplaint(2, 2, 2, 3, 1, "Garbage remove", "Garbage remove", "ACTIVE","High");
-        complaintBean.createComplaint(
-                6,   // citizen user
-                1,   // category
-                2,   // society
-                2,   // ward
-                2,   // zone
-                "Garbage remove",
-                "Garbage remove",
-                "ACTIVE");
+//        complaintBean.createComplaint(
+//                6,   // citizen user
+//                1,   // category
+//                2,   // society
+//                2,   // ward
+//                2,   // zone
+//                "Garbage remove",
+//                "Garbage remove",
+//                "ACTIVE");
 //        List<Object[]> complaints = complaintBean.getComplaintByUserId(2);
 //
 //        for (Object[] row : complaints) {

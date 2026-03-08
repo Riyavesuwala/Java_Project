@@ -34,6 +34,9 @@ public class SlaEscalationScheduler {
     
     @EJB
     ComplaintBeanLocal complaintBean;
+    
+    @EJB
+    NotificationBeanLocal notifyBean;
 
     // Run every minute
      @Schedule(hour = "*", minute = "*", second = "0", persistent = false)
@@ -124,6 +127,7 @@ private void escalateComplaint(Complaint complaint, String nextLevel,int logedIn
 
     em.merge(complaint);
     
+    
     complaintBean.createComplaintStatusHistory(complaint, oldStatus, newStatus, user);
 
     ComplaintEscalation escalation = new ComplaintEscalation();
@@ -133,6 +137,19 @@ private void escalateComplaint(Complaint complaint, String nextLevel,int logedIn
     escalation.setEscalatedAt(now);
 
     em.persist(escalation);
+
+    notifyBean.sendSMS(
+            user.getMobile(),
+            "Your Complaint ID: " + complaint.getComplaintId()
+            + " has been escalated to " + nextLevel + " for further action."
+    );
+
+    // Send notification to newly assigned officer
+    notifyBean.sendSMS(
+            nextOfficer.getUserId().getMobile(),
+            "New Escalated Complaint Assigned. ID: "
+            + complaint.getComplaintId()
+    );
 
     System.out.println("Complaint ID "
             + complaint.getComplaintId()

@@ -1,10 +1,10 @@
-/*
+    /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Entity;
 
-import com.mycompany.grievancesystem.*;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -177,6 +177,7 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<ComplaintStatusHistory> getComplaintStatusHistoryCollection() {
         return complaintStatusHistoryCollection;
     }
@@ -186,6 +187,7 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<Complaint> getComplaintCollection() {
         return complaintCollection;
     }
@@ -195,6 +197,7 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<ComplaintReply> getComplaintReplyCollection() {
         return complaintReplyCollection;
     }
@@ -204,6 +207,7 @@ public class Users implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<Officers> getOfficersCollection() {
         return officersCollection;
     }
