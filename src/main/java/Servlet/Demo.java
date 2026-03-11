@@ -216,7 +216,7 @@ public class Demo extends HttpServlet {
 //          adminBean.createOfficer(1, 1, 2,1, "WARD");
 //          adminBean.updateOfficer(1, 0, 0, 0, 0, "JJ");
 //          adminBean.deleteOfficer(1);
-//        complaintBean.createComplaint(2, 2, 2, 3, 1, "Garbage remove", "Garbage remove", "ACTIVE","High");
+//        complaintBean.createComplaint(1,1,1,1,1,"Garbage Issue","Garbage Issue","ACTIVE","High");
 //        List<Object[]> complaints = complaintBean.getComplaintByUserId(2);
 //
 //        for (Object[] row : complaints) {
@@ -261,12 +261,12 @@ public class Demo extends HttpServlet {
 //            }
 
               // Display Designation wise Complaint based on the officer ID
-              List<Complaint> complaints=officerBean.getComplaintByOfficer(3);
-              for(Complaint c: complaints){
-//                  System.out.println(c.getTitle() + c.getDescription()); 
-                    System.out.println(c.getComplaintId());            
-
-              }
+//              List<Complaint> complaints=officerBean.getComplaintByOfficer(3);
+//              for(Complaint c: complaints){
+////                  System.out.println(c.getTitle() + c.getDescription()); 
+//                    System.out.println(c.getComplaintId());            
+//
+//              }
     }
 
     /**

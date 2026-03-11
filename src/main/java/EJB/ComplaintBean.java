@@ -66,9 +66,9 @@ public class ComplaintBean implements ComplaintBeanLocal {
             }
 
             // Count the due_date
-            LocalDateTime now=LocalDateTime.now();
-            LocalDateTime dueDate=now.plusHours(sla.getMaxResolutionDays());
-            
+            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime dueDate = now.plusHours(sla.getMaxResolutionDays());
+
             Complaint complaint = new Complaint();
             complaint.setCitizenId(user);
             complaint.setCategoryId(category);
@@ -77,7 +77,6 @@ public class ComplaintBean implements ComplaintBeanLocal {
             complaint.setZoneId(zone);
             complaint.setDueDate(dueDate);
             complaint.setCreatedAt(now);
-            
 
             complaint.setTitle(title);
             complaint.setDescription(description);
@@ -112,31 +111,59 @@ public class ComplaintBean implements ComplaintBeanLocal {
         Ward ward = complaint.getWardId();
         Departments dept = complaint.getCategoryId().getDepartmentId();
 
-        List<Officers> officers = em.createQuery(
-                "SELECT o FROM Officers o WHERE o.designation = :designation "
+        List<Object[]> results = em.createQuery(
+                "SELECT o, COUNT(c) FROM Officers o "
+                + "LEFT JOIN Complaint c ON c.assignedOfficerId = o "
+                + "AND c.status NOT IN ('RESOLVED','CLOSED') "
+                + "WHERE o.designation = 'WARD_OFFICER' "
                 + "AND o.wardId = :ward "
-                + "AND o.departmentId = :dept ",
-                Officers.class)
-                .setParameter("designation", "WARD")
+                + "AND o.departmentId = :dept "
+                + "GROUP BY o "
+                + "ORDER BY COUNT(c) ASC",
+                Object[].class)
                 .setParameter("ward", ward)
                 .setParameter("dept", dept)
-                .setMaxResults(1)
                 .getResultList();
 
-        if (officers.isEmpty()) {
-            try {
-                throw new Exception("No ward Officer available");
-            } catch (Exception ex) {
-                Logger.getLogger(AdminBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        if (results.isEmpty()) {
+            throw new RuntimeException("No ward officers available");
         }
 
-        Officers selectedOfficer = officers.get(0);
+        long minLoad = (Long) results.get(0)[1];
+
+        List<Officers> leastLoaded = new java.util.ArrayList<>();
+
+        for (Object[] r : results) {
+
+            if ((Long) r[1] == minLoad) {
+                leastLoaded.add((Officers) r[0]);
+            }
+
+        }
+
+        Officers selectedOfficer;
+        if (leastLoaded.size() == 1) {
+            selectedOfficer = leastLoaded.get(0);
+        } else {
+            selectedOfficer = roundRobinSelect(leastLoaded);
+        }
 
         complaint.setAssignedOfficerId(selectedOfficer);
         complaint.setStatus("ASSIGNED");
 
         em.merge(complaint);
+    }
+    private static int lastIndex = -1;
+
+    private Officers roundRobinSelect(List<Officers> officers) {
+
+        if (officers.isEmpty()) {
+            return null;
+        }
+
+        lastIndex = (lastIndex + 1) % officers.size();
+
+        return officers.get(lastIndex);
     }
 
     @Override
@@ -148,30 +175,29 @@ public class ComplaintBean implements ComplaintBeanLocal {
     }
 
     // Complaint_status_history Functionality
-    
     @Override
     public void createComplaintStatusHistory(Complaint complaint, String old_status, String new_status, Users changed_by) {
-        ComplaintStatusHistory history=new ComplaintStatusHistory();
+        ComplaintStatusHistory history = new ComplaintStatusHistory();
         history.setComplaintId(complaint);
         history.setOldStatus(old_status);
         history.setNewStatus(new_status);
         history.setChangedBy(changed_by);
         history.setChangedAt(LocalDateTime.now());
-        
+
         em.persist(history);
     }
 
     @Override
     public void createComplaintReply(int complaint_id, int replied_by, String message) {
-        Complaint complaint=em.find(Complaint.class,complaint_id);
-        Users user=em.find(Users.class,replied_by);
-        
-        ComplaintReply reply=new ComplaintReply();
+        Complaint complaint = em.find(Complaint.class, complaint_id);
+        Users user = em.find(Users.class, replied_by);
+
+        ComplaintReply reply = new ComplaintReply();
         reply.setComplaintId(complaint);
         reply.setRepliedBy(user);
         reply.setMessage(message);
         reply.setRepliedAt(LocalDateTime.now());
-        
+
         em.persist(reply);
         System.out.println(reply);
     }
