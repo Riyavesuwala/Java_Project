@@ -34,6 +34,9 @@ public class SlaEscalationScheduler {
 
     @EJB
     ComplaintBeanLocal complaintBean;
+    
+    @EJB
+    NotificationBeanLocal notifyBean;
 
     // Run every minute
     @Schedule(hour = "*", minute = "*", second = "0", persistent = false)
@@ -120,7 +123,10 @@ public class SlaEscalationScheduler {
         complaint.setDueDate(newDueDate);
         complaint.setStatus(newStatus);
 
-        em.merge(complaint);
+    em.merge(complaint);
+    
+    
+    complaintBean.createComplaintStatusHistory(complaint, oldStatus, newStatus, user);
 
         complaintBean.createComplaintStatusHistory(complaint, oldStatus, newStatus, user);
 
@@ -130,13 +136,24 @@ public class SlaEscalationScheduler {
         escalation.setReason("SLA Breached - Escalated to " + nextLevel);
         escalation.setEscalatedAt(now);
 
-        em.persist(escalation);
+    notifyBean.sendSMS(
+            user.getMobile(),
+            "Your Complaint ID: " + complaint.getComplaintId()
+            + " has been escalated to " + nextLevel + " for further action."
+    );
 
-        System.out.println("Complaint ID "
-                + complaint.getComplaintId()
-                + " escalated to "
-                + nextLevel);
-    }
+    // Send notification to newly assigned officer
+    notifyBean.sendSMS(
+            nextOfficer.getUserId().getMobile(),
+            "New Escalated Complaint Assigned. ID: "
+            + complaint.getComplaintId()
+    );
+
+    System.out.println("Complaint ID "
+            + complaint.getComplaintId()
+            + " escalated to "
+            + nextLevel);
+}
 
     private Officers selectOfficer(Complaint complaint, String level) {
 

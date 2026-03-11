@@ -4,7 +4,7 @@
  */
 package Entity;
 
-import com.mycompany.grievancesystem.*;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -102,6 +102,7 @@ public class Society implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<Users> getUsersCollection() {
         return usersCollection;
     }
@@ -119,6 +120,7 @@ public class Society implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<Complaint> getComplaintCollection() {
         return complaintCollection;
     }

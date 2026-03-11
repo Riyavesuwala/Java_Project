@@ -24,6 +24,9 @@ public class OfficerBean implements OfficerBeanLocal {
  
  @EJB
  ComplaintBeanLocal complaintBean;
+ 
+ @EJB
+ NotificationBeanLocal notifyBean;
 
     @Override
     public List<Complaint> getAssignedComplaint(int officerId) {
@@ -47,6 +50,14 @@ public class OfficerBean implements OfficerBeanLocal {
             complaintBean.createComplaintStatusHistory(c, odlStatus, odlStatus, user);
             
             em.merge(c);
+            
+            if (status.equalsIgnoreCase("RESOLVED") || status.equalsIgnoreCase("SOLVED")) {
+                notifyBean.sendSMS(
+                        user.getMobile(),
+                        "Your Complaint ID: " + c.getComplaintId()
+                        + " has been resolved. Thank you for using the system."
+                );
+            }
         }
     }
 

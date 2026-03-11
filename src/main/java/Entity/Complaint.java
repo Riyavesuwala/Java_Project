@@ -4,7 +4,7 @@
  */
 package Entity;
 
-//import com.mycompany.grievancesystem.*;
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,8 +21,8 @@ import jakarta.validation.constraints.Size;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlTransient;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Collection;
+import java.time.LocalDateTime;
 
 /**
  *
@@ -151,6 +151,7 @@ public class Complaint implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<ComplaintStatusHistory> getComplaintStatusHistoryCollection() {
         return complaintStatusHistoryCollection;
     }
@@ -160,6 +161,7 @@ public class Complaint implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<Feedback> getFeedbackCollection() {
         return feedbackCollection;
     }
@@ -217,6 +219,7 @@ public class Complaint implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<ComplaintReply> getComplaintReplyCollection() {
         return complaintReplyCollection;
     }
@@ -226,6 +229,7 @@ public class Complaint implements Serializable {
     }
 
     @XmlTransient
+    @JsonbTransient
     public Collection<ComplaintEscalation> getComplaintEscalationCollection() {
         return complaintEscalationCollection;
     }
