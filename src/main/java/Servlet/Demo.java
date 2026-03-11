@@ -226,12 +226,12 @@ public class Demo extends HttpServlet {
 //            }
 
               // Display Designation wise Complaint based on the officer ID
-              List<Complaint> complaints=officerBean.getComplaintByOfficer(3);
-              for(Complaint c: complaints){
-//                  System.out.println(c.getTitle() + c.getDescription()); 
-                    System.out.println(c.getComplaintId());            
-
-              }
+//              List<Complaint> complaints=officerBean.getComplaintByOfficer(3);
+//              for(Complaint c: complaints){
+////                  System.out.println(c.getTitle() + c.getDescription()); 
+//                    System.out.println(c.getComplaintId());            
+//
+//              }
     }
 
     /**
