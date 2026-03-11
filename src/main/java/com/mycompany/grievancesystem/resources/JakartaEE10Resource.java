@@ -5,6 +5,7 @@ import EJB.ComplaintBeanLocal;
 import EJB.OfficerBeanLocal;
 import EJB.UserBeanLocal;
 import Entity.Complaint;
+import Entity.ComplaintStatusHistory;
 import Entity.Officers;
 import Entity.SlaRules;
 import Entity.Users;
@@ -266,6 +267,13 @@ public class JakartaEE10Resource {
         complaintBean.createComplaintReply(complaintId, repliedBy, message);
     }
     
+    @GET
+    @Path("complaintHistory/{complaintId}")
+    @Produces("application/json")
+    public List<ComplaintStatusHistory> getHistory(@PathParam("complaintId") int complaintId){
+        return complaintBean.getComplaintStatusHistory(complaintId);
+    }
+    
     //OfficerBean
     
     @GET
@@ -345,5 +353,13 @@ public class JakartaEE10Resource {
                               @PathParam("newPassword") String newPassword){
 
         userBean.resetPassword(userId, newPassword);
+    }
+    @POST
+    @Path("submitFeedback/{complaintId}/{rating}/{comments}")
+    public void submitFeedback(@PathParam("complaintId") int complaintId,
+                               @PathParam("rating") String rating,
+                               @PathParam("comments") String comments){
+
+        userBean.submitFeedback(complaintId, rating, comments);
     }
 }

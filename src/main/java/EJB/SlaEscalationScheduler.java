@@ -34,7 +34,7 @@ public class SlaEscalationScheduler {
 
     @EJB
     ComplaintBeanLocal complaintBean;
-    
+
     @EJB
     NotificationBeanLocal notifyBean;
 
@@ -117,16 +117,14 @@ public class SlaEscalationScheduler {
         String newStatus = "ESCALATED_TO_" + nextLevel;
         Users user = em.find(Users.class, logedInUser);
 
-        LocalDateTime newDueDate = now.plusDays(nextSla.getMaxResolutionDays());
+//        LocalDateTime newDueDate = now.plusDays(nextSla.getMaxResolutionDays());
+        LocalDateTime newDueDate = now.plusMinutes(nextSla.getMaxResolutionDays());
 
         complaint.setAssignedOfficerId(nextOfficer);
         complaint.setDueDate(newDueDate);
         complaint.setStatus(newStatus);
 
-    em.merge(complaint);
-    
-    
-    complaintBean.createComplaintStatusHistory(complaint, oldStatus, newStatus, user);
+        em.merge(complaint);
 
         complaintBean.createComplaintStatusHistory(complaint, oldStatus, newStatus, user);
 
@@ -135,25 +133,27 @@ public class SlaEscalationScheduler {
         escalation.setEscalatedTo(nextOfficer);
         escalation.setReason("SLA Breached - Escalated to " + nextLevel);
         escalation.setEscalatedAt(now);
+        
+        em.merge(escalation);
 
-    notifyBean.sendSMS(
-            user.getMobile(),
-            "Your Complaint ID: " + complaint.getComplaintId()
-            + " has been escalated to " + nextLevel + " for further action."
-    );
+        notifyBean.sendSMS(
+                user.getMobile(),
+                "Your Complaint ID: " + complaint.getComplaintId()
+                + " has been escalated to " + nextLevel + " for further action."
+        );
 
-    // Send notification to newly assigned officer
-    notifyBean.sendSMS(
-            nextOfficer.getUserId().getMobile(),
-            "New Escalated Complaint Assigned. ID: "
-            + complaint.getComplaintId()
-    );
+        // Send notification to newly assigned officer
+        notifyBean.sendSMS(
+                nextOfficer.getUserId().getMobile(),
+                "New Escalated Complaint Assigned. ID: "
+                + complaint.getComplaintId()
+        );
 
-    System.out.println("Complaint ID "
-            + complaint.getComplaintId()
-            + " escalated to "
-            + nextLevel);
-}
+        System.out.println("Complaint ID "
+                + complaint.getComplaintId()
+                + " escalated to "
+                + nextLevel);
+    }
 
     private Officers selectOfficer(Complaint complaint, String level) {
 

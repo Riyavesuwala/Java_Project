@@ -5,6 +5,7 @@
 package EJB;
 
 import Entity.Complaint;
+import Entity.ComplaintStatusHistory;
 import Entity.Users;
 import Entity.Officers;
 import jakarta.ejb.Local;
@@ -36,4 +37,6 @@ public interface ComplaintBeanLocal {
     
     //complaint reply
     void createComplaintReply(int complaint_id,int replied_by,String message);
+    
+    List<ComplaintStatusHistory> getComplaintStatusHistory(int complaintId);
 }

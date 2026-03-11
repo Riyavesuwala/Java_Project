@@ -36,8 +36,8 @@ public class ComplaintBean implements ComplaintBeanLocal {
 
     @EJB
     NotificationBeanLocal notifyBean;
-    
-   @Override
+
+    @Override
     public void createComplaint(Integer userId,
             Integer categoryId,
             Integer societyId,
@@ -71,7 +71,8 @@ public class ComplaintBean implements ComplaintBeanLocal {
 
             // Count the due_date
             LocalDateTime now = LocalDateTime.now();
-            LocalDateTime dueDate = now.plusHours(sla.getMaxResolutionDays());
+//            LocalDateTime dueDate = now.plusHours(sla.getMaxResolutionDays());
+            LocalDateTime dueDate = now.plusMinutes(sla.getMaxResolutionDays());
 
             Complaint complaint = new Complaint();
             complaint.setCitizenId(user);
@@ -87,20 +88,19 @@ public class ComplaintBean implements ComplaintBeanLocal {
             complaint.setStatus(status);
             complaint.setPriority(priority);
 
-            complaint.setCreatedAt(java.time.LocalDateTime.now());
-            complaint.setDueDate(java.time.LocalDateTime.now().plusDays(3));
-            
+//            complaint.setCreatedAt(java.time.LocalDateTime.now());
+//            complaint.setDueDate(java.time.LocalDateTime.now().plusDays(3));
+
 //        complaint.setc(new java.util.Date());
-            em.persist(complaint);           
+            em.persist(complaint);
             em.flush();
 
             Integer generatedId = complaint.getComplaintId();
             Officers officer = assignToWardOfficer(generatedId);
-            
-            notifyBean.sendSMS(user.getMobile(),"Complaint Registered Successfully. ID : "+complaint.getComplaintId());
-            notifyBean.sendSMS(officer.getUserId().getMobile(), "New Complaint Assigned. ID : "+generatedId);
-            
-            
+
+            notifyBean.sendSMS(user.getMobile(), "Complaint Registered Successfully. ID : " + complaint.getComplaintId());
+            notifyBean.sendSMS(officer.getUserId().getMobile(), "New Complaint Assigned. ID : " + generatedId);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,7 +127,7 @@ public class ComplaintBean implements ComplaintBeanLocal {
                 + "LEFT JOIN Complaint c ON c.assignedOfficerId = o "
                 + "AND c.status NOT IN ('RESOLVED','CLOSED') "
                 + "WHERE o.designation = 'WARD_OFFICER' "
-                + "AND o.wardId = :ward "
+                + "AND o.wardId = :ward "   
                 + "AND o.departmentId = :dept "
                 + "GROUP BY o "
                 + "ORDER BY COUNT(c) ASC",
@@ -150,7 +150,7 @@ public class ComplaintBean implements ComplaintBeanLocal {
                 leastLoaded.add((Officers) r[0]);
             }
         }
-       
+
 //        List<Officers> officers = em.createQuery(
 //            "SELECT o FROM Officers o WHERE "
 //            + "o.wardId = :ward "
@@ -166,9 +166,6 @@ public class ComplaintBean implements ComplaintBeanLocal {
 //            } catch (Exception ex) {
 //                Logger.getLogger(AdminBean.class.getName()).log(Level.SEVERE, null, ex);
 //            }
-
-        
-
         Officers selectedOfficer;
         if (leastLoaded.size() == 1) {
             selectedOfficer = leastLoaded.get(0);
@@ -180,13 +177,12 @@ public class ComplaintBean implements ComplaintBeanLocal {
         complaint.setStatus("ASSIGNED");
 
         em.merge(complaint);
-        
+
         return selectedOfficer;
     }
-    
 
     private static int lastIndex = -1;
-            
+
     private Officers roundRobinSelect(List<Officers> officers) {
 
         if (officers.isEmpty()) {
@@ -232,6 +228,16 @@ public class ComplaintBean implements ComplaintBeanLocal {
 
         em.persist(reply);
         System.out.println(reply);
+    }
+    
+    @Override
+    public List<ComplaintStatusHistory> getComplaintStatusHistory(int complaintId) {
+
+        return em.createQuery(
+            "SELECT c FROM ComplaintStatusHistory c WHERE c.complaintId.complaintId = :cid ORDER BY c.changedAt DESC",
+            ComplaintStatusHistory.class)
+            .setParameter("cid", complaintId)
+            .getResultList();
     }
 
 }

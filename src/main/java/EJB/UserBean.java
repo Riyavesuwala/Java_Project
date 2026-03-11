@@ -4,6 +4,8 @@
  */
 package EJB;
 
+import Entity.Complaint;
+import Entity.Feedback;
 import Entity.Society;
 import Entity.Users;
 import jakarta.ejb.Stateless;
@@ -119,5 +121,25 @@ public class UserBean implements UserBeanLocal {
 
             em.merge(user);
         }
+    }
+    
+    @Override
+    public void submitFeedback(int complaintId, String rating, String comments) {
+
+        Complaint complaint = em.find(Complaint.class, complaintId);
+
+        if(complaint == null){
+            System.out.println("Complaint not found");
+            return;
+        }
+
+        Feedback feedback = new Feedback();
+        feedback.setComplaintId(complaint);
+        feedback.setRating(rating);
+        feedback.setComments(comments);
+        feedback.setSubmittedAt(new java.util.Date());
+
+        em.persist(feedback);
+
     }
 }
