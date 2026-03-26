@@ -12,6 +12,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.Date;
+import java.util.List;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -27,13 +28,18 @@ public class UserBean implements UserBeanLocal {
     public Users login(String username, String password) {
 
         try {
+            List<Users> users = em.createQuery(
+                "SELECT u FROM Users u WHERE u.username = :username AND u.status = 'Active'",
+                Users.class)
+                .setParameter("username", username)
+                .getResultList();
 
-            Users user = em.createQuery(
-                    "SELECT u FROM Users u WHERE u.username=:username AND u.status='Active'",
-                    Users.class)
-                    .setParameter("username", username)
-                    .getSingleResult();
-
+            if (users.isEmpty()) {
+                return null;
+            }
+            
+            Users user = users.get(0);
+            
             // check hashed password
             if(BCrypt.checkpw(password, user.getPassword())) {
                 return user;
