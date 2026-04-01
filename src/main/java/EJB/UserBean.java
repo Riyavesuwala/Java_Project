@@ -13,6 +13,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.Date;
 import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 //import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -40,10 +41,10 @@ public class UserBean implements UserBeanLocal {
             
             Users user = users.get(0);
             
-            // check hashed password
-//            if(BCrypt.checkpw(password, user.getPassword())) {
-//                return user;
-//            }
+//             check hashed password
+            if(BCrypt.checkpw(password, user.getPassword())) {
+                return user;
+            }
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -70,9 +71,9 @@ public class UserBean implements UserBeanLocal {
             user.setMobile(mobile);
             user.setUsername(username);
 
-            // encrypt password
-//            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
-//            user.setPassword(hashedPassword);
+            // Hashed password
+            String hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+            user.setPassword(hashedPassword);
 
             user.setRole(role);
             user.setStatus("Active");
@@ -121,9 +122,9 @@ public class UserBean implements UserBeanLocal {
 
         if(user != null){
 
-//            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+            String hashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
 
-//            user.setPassword(hashedPassword);
+            user.setPassword(hashedPassword);
 
             em.merge(user);
         }
@@ -145,7 +146,6 @@ public class UserBean implements UserBeanLocal {
         feedback.setComments(comments);
         feedback.setSubmittedAt(new java.util.Date());
 
-        // ✅ Maintain bidirectional relationship (Ward style)
         if (complaint.getFeedbackCollection() != null) {
             complaint.getFeedbackCollection().add(feedback);
         }
