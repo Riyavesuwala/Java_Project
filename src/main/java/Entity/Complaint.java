@@ -150,7 +150,7 @@ public class Complaint implements Serializable {
         this.dueDate = dueDate;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<ComplaintStatusHistory> getComplaintStatusHistoryCollection() {
         return complaintStatusHistoryCollection;
@@ -160,7 +160,7 @@ public class Complaint implements Serializable {
         this.complaintStatusHistoryCollection = complaintStatusHistoryCollection;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Feedback> getFeedbackCollection() {
         return feedbackCollection;
@@ -218,7 +218,7 @@ public class Complaint implements Serializable {
         this.zoneId = zoneId;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<ComplaintReply> getComplaintReplyCollection() {
         return complaintReplyCollection;
@@ -228,7 +228,7 @@ public class Complaint implements Serializable {
         this.complaintReplyCollection = complaintReplyCollection;
     }
 
-    @XmlTransient
+   
     @JsonbTransient
     public Collection<ComplaintEscalation> getComplaintEscalationCollection() {
         return complaintEscalationCollection;

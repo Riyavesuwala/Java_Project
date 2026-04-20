@@ -176,7 +176,7 @@ public class Users implements Serializable {
         this.societyId = societyId;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<ComplaintStatusHistory> getComplaintStatusHistoryCollection() {
         return complaintStatusHistoryCollection;
@@ -186,7 +186,7 @@ public class Users implements Serializable {
         this.complaintStatusHistoryCollection = complaintStatusHistoryCollection;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Complaint> getComplaintCollection() {
         return complaintCollection;
@@ -196,7 +196,7 @@ public class Users implements Serializable {
         this.complaintCollection = complaintCollection;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<ComplaintReply> getComplaintReplyCollection() {
         return complaintReplyCollection;
@@ -206,7 +206,7 @@ public class Users implements Serializable {
         this.complaintReplyCollection = complaintReplyCollection;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Officers> getOfficersCollection() {
         return officersCollection;

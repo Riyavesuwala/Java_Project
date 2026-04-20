@@ -42,26 +42,18 @@ public class OfficerBean implements OfficerBeanLocal {
 
         if (c != null) {
 
-            String oldStatus = c.getStatus();   // FIXED (typo)
+            String oldStatus = c.getStatus();  
             Users user = em.find(Users.class, logenInUser);
 
-            //  Update status
             c.setStatus(status);
 
-            //  Maintain history (FIX: old → new)
             complaintBean.createComplaintStatusHistory(c.getComplaintId(), oldStatus, status, user);
 
-            // maintain bidirectional relation if exists
-            if (c.getComplaintStatusHistoryCollection() != null) {
-                // nothing mandatory, since history is new entity
-            }
-
             em.merge(c);
-
-            //  Notification (better: send to complaint owner, not officer)
+            
             if (status.equalsIgnoreCase("RESOLVED") || status.equalsIgnoreCase("SOLVED")) {
 
-                Users citizen = c.getCitizenId();   // correct user
+                Users citizen = c.getCitizenId();  
 
                 notifyBean.sendSMS(
                         citizen.getMobile(),

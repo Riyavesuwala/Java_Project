@@ -82,7 +82,7 @@ public class ComplaintCategory implements Serializable {
         this.departmentId = departmentId;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Complaint> getComplaintCollection() {
         return complaintCollection;

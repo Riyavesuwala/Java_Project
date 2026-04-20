@@ -97,7 +97,7 @@ public class Departments implements Serializable {
         this.status = status;
     }
 
-    @XmlTransient
+   
     @JsonbTransient
     public Collection<ComplaintCategory> getComplaintCategoryCollection() {
         return complaintCategoryCollection;
@@ -107,7 +107,7 @@ public class Departments implements Serializable {
         this.complaintCategoryCollection = complaintCategoryCollection;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Officers> getOfficersCollection() {
         return officersCollection;

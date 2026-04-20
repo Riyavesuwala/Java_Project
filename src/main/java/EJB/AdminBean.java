@@ -10,13 +10,15 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+//import java.util.logging.Level;
+//import java.util.logging.Logger;
 
 /**
  *
  * @author krishnaiya
  */
+
+//Admin will create zone,department,ward,society,category,officer,sla_rules
 @Stateless
 public class AdminBean implements AdminBeanLocal {
 
@@ -34,7 +36,7 @@ public class AdminBean implements AdminBeanLocal {
 
             if (corp != null) {
                 zone.setCorporationId(corp);
-                corp.getZoneCollection().add(zone); 
+                corp.getZoneCollection().add(zone);
             }
 
             em.persist(zone);
@@ -43,7 +45,7 @@ public class AdminBean implements AdminBeanLocal {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void updateZone(Integer zoneId, String zoneName, String status, Integer corporationId) {
         try {
@@ -87,7 +89,7 @@ public class AdminBean implements AdminBeanLocal {
     }
 
     @Override
-    public void createDepartment(String departmentName,String description,String status) {
+    public void createDepartment(String departmentName, String description, String status) {
         try {
             Departments dept = new Departments();
 
@@ -219,31 +221,31 @@ public class AdminBean implements AdminBeanLocal {
 
     @Override
     public void updateCategory(Integer id, String name, Integer departmentId) {
-    try {
-        ComplaintCategory cat = em.find(ComplaintCategory.class, id);
-        Departments dept = em.find(Departments.class, departmentId);
+        try {
+            ComplaintCategory cat = em.find(ComplaintCategory.class, id);
+            Departments dept = em.find(Departments.class, departmentId);
 
-        if (cat != null && dept != null) {
+            if (cat != null && dept != null) {
 
-            Collection<ComplaintCategory> categories = dept.getComplaintCategoryCollection();
+                Collection<ComplaintCategory> categories = dept.getComplaintCategoryCollection();
 
-            categories.remove(cat);
+                categories.remove(cat);
 
-            cat.setCategoryName(name);
-            cat.setDepartmentId(dept);
+                cat.setCategoryName(name);
+                cat.setDepartmentId(dept);
 
-            categories.add(cat);
+                categories.add(cat);
 
-            dept.setComplaintCategoryCollection(categories);
+                dept.setComplaintCategoryCollection(categories);
 
-            em.merge(dept);
-            em.merge(cat);
+                em.merge(dept);
+                em.merge(cat);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-}
 
     @Override
     public void deleteCategory(Integer id) {
@@ -311,8 +313,6 @@ public class AdminBean implements AdminBeanLocal {
         }
     }
 
-    // Add business logic below. (Right-click in editor and choose
-    // "Insert Code > Add Business Method")
     @Override
     public void deleteWard(int wardId) {
         Ward ward = em.find(Ward.class, wardId);
@@ -352,7 +352,7 @@ public class AdminBean implements AdminBeanLocal {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void updateOfficer(int officerId, int userId, int departmentId, int zoneId, int wardId, String designation) {
         try {
@@ -384,11 +384,9 @@ public class AdminBean implements AdminBeanLocal {
                 officer.setWardId(ward);
                 officer.setDesignation(designation);
 
-                // Add to new collections
                 zone.getOfficersCollection().add(officer);
                 ward.getOfficersCollection().add(officer);
-
-                // Update parent + child
+                
                 em.merge(zone);
                 em.merge(ward);
                 em.merge(officer);
@@ -409,16 +407,16 @@ public class AdminBean implements AdminBeanLocal {
 
     @Override
     public void addSlaRules(Integer categoryId, Integer maxDays) {
-        ComplaintCategory category=em.find(ComplaintCategory.class,categoryId);
-        
-        if(category!=null){
+        ComplaintCategory category = em.find(ComplaintCategory.class, categoryId);
+
+        if (category != null) {
             List<SlaRules> existing = em.createQuery(
-            "SELECT s FROM SlaRules s WHERE s.categoryId.categoryId=:cid",SlaRules.class
+                    "SELECT s FROM SlaRules s WHERE s.categoryId.categoryId=:cid", SlaRules.class
             ).setParameter("cid", categoryId)
                     .getResultList();
-            
-            if(existing.isEmpty()){
-                SlaRules sla=new SlaRules();
+
+            if (existing.isEmpty()) {
+                SlaRules sla = new SlaRules();
                 sla.setCategoryId(category);
                 sla.setMaxResolutionDays(maxDays);
                 em.persist(sla);
@@ -428,31 +426,40 @@ public class AdminBean implements AdminBeanLocal {
 
     @Override
     public void deleteSlaRule(Integer slaId) {
-       SlaRules sla = em.find(SlaRules.class,slaId);
-       
-       if(sla!=null){
-           em.remove(sla);
-       }
+        SlaRules sla = em.find(SlaRules.class, slaId);
+
+        if (sla != null) {
+            em.remove(sla);
+        }
     }
 
     @Override
     public void updateSlaRule(Integer slaId, Integer maxDays) {
-        SlaRules sla=em.find(SlaRules.class,slaId);
-        
-        if(sla!=null){
+        SlaRules sla = em.find(SlaRules.class, slaId);
+
+        if (sla != null) {
             sla.setMaxResolutionDays(maxDays);
             em.merge(sla);
         }
     }
+
     @Override
-    public List<SlaRules> getAllSlaRules(){
-        return em.createQuery("SELECT s FROM SlaRules s",SlaRules.class)
+    public List<SlaRules> getAllSlaRules() {
+        return em.createQuery("SELECT s FROM SlaRules s", SlaRules.class)
                 .getResultList();
     }
 
     @Override
     public List<ComplaintCategory> getAllCategory() {
-        return em.createNamedQuery("ComplaintCategory.findAll",ComplaintCategory.class).getResultList();
+        return em.createNamedQuery("ComplaintCategory.findAll", ComplaintCategory.class).getResultList();
     }
-  
+
+    @Override
+    public List<Society> getAllSocities(int wardid) {
+        return em.createQuery(
+                "SELECT s FROM Society s WHERE s.wardId.wardId = :wid", Society.class)
+                .setParameter("wid", wardid)
+                .getResultList();
+    }
+
 }

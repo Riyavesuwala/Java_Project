@@ -19,7 +19,7 @@ public class QRCodeManager {
     
         try{
             String wardID="1";
-            String data = "https://untearable-yasmin-intermetameric.ngrok-free.dev/Government_Grievance_Redressal_System/ComplaintRegister.jsf?wardID="+wardID;
+            String data = "https://venita-charmless-ryleigh.ngrok-free.dev/GrievanceSystem/ComplaintRegister.jsf?wardID="+wardID;
             
             BitMatrix matrix = new MultiFormatWriter().encode(data, BarcodeFormat.QR_CODE, 300, 300);
             

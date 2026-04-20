@@ -101,7 +101,7 @@ public class Society implements Serializable {
         this.status = status;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Users> getUsersCollection() {
         return usersCollection;
@@ -119,7 +119,7 @@ public class Society implements Serializable {
         this.wardId = wardId;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Complaint> getComplaintCollection() {
         return complaintCollection;

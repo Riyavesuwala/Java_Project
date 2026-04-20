@@ -78,7 +78,7 @@ public class ComplaintBean implements ComplaintBeanLocal {
                 throw new RuntimeException("No SLA rule found for category");
             }
 
-            // Time calculation (UNCHANGED)
+            // Time calculation
             LocalDateTime now = LocalDateTime.now();
             LocalDateTime dueDate = now.plusMinutes(sla.getMaxResolutionDays());
 
@@ -103,13 +103,12 @@ public class ComplaintBean implements ComplaintBeanLocal {
             zone.getComplaintCollection().add(complaint);
 
             em.persist(complaint);
-            em.flush();
 
             Integer generatedId = complaint.getComplaintId();
 
             Officers officer = assignToWardOfficer(generatedId);
 
-            // Notifications (UNCHANGED)
+            // Notifications 
             notifyBean.sendSMS(user.getMobile(),
                     "Complaint Registered Successfully. ID : " + generatedId);
 
@@ -150,7 +149,6 @@ public class ComplaintBean implements ComplaintBeanLocal {
         if (results.isEmpty()) {
             if (results.isEmpty()) {
 
-                // fallback query (ignore department)
                 results = em.createQuery(
                         "SELECT o, COUNT(c) FROM Officers o "
                         + "LEFT JOIN Complaint c ON c.assignedOfficerId = o "
@@ -183,17 +181,14 @@ public class ComplaintBean implements ComplaintBeanLocal {
             selectedOfficer = roundRobinSelect(leastLoaded);
         }
 
-        //  REMOVE from old officer (if exists)
         Officers oldOfficer = complaint.getAssignedOfficerId();
         if (oldOfficer != null) {
             oldOfficer.getComplaintCollection().remove(complaint);
         }
 
-        // SET new officer
         complaint.setAssignedOfficerId(selectedOfficer);
         complaint.setStatus("ASSIGNED");
 
-        //  ADD to new officer collection
         selectedOfficer.getComplaintCollection().add(complaint);
 
         em.merge(selectedOfficer);

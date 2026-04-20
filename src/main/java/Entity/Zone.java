@@ -100,7 +100,7 @@ public class Zone implements Serializable {
         this.wardCollection = wardCollection;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Complaint> getComplaintCollection() {
         return complaintCollection;
@@ -118,7 +118,7 @@ public class Zone implements Serializable {
         this.corporationId = corporationId;
     }
 
-    @XmlTransient
+   
     @JsonbTransient
     public Collection<Officers> getOfficersCollection() {
         return officersCollection;

@@ -94,7 +94,7 @@ public class Corporation implements Serializable {
         this.status = status;
     }
 
-    @XmlTransient
+    
     @JsonbTransient
     public Collection<Zone> getZoneCollection() {
         return zoneCollection;

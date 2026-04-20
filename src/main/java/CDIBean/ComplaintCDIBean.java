@@ -42,8 +42,9 @@ public class ComplaintCDIBean implements Serializable{
     
     // Getting Scoiety of that Ward
     public void loadSociety(){
-        rs=client.decodeQRCode(Response.class, String.valueOf(ward_id));
-        socities=rs.readEntity(new GenericType<List<Society>>(){});    
+//        rs=client.decodeQRCode(Response.class, String.valueOf(ward_id));
+//        socities=rs.readEntity(new GenericType<List<Society>>(){});  
+          socities=adminService.getAllSocities(ward_id);
     }
     
     public void submitComplaint(){

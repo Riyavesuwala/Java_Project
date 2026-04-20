@@ -6,7 +6,7 @@ package EJB;
 
 import Entity.Complaint;
 import Entity.ComplaintEscalation;
-import Entity.ComplaintStatusHistory;
+//import Entity.ComplaintStatusHistory;
 import Entity.Officers;
 import Entity.SlaRules;
 import Entity.Users;

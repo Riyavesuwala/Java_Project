@@ -67,7 +67,7 @@ public class UserBean implements UserBeanLocal {
             Users user = new Users();
 
             user.setFullName(fullName);
-            user.setEmail(email);
+            user.setEmail(email);   
             user.setMobile(mobile);
             user.setUsername(username);
 
