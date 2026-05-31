@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="jakarta.faces.html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
 
 <h:head>
     <title>Login</title>
@@ -22,36 +23,36 @@
 
         <h:form>
 
-            <p:growl id="msg"/>
+            <p:growl id="msg" showDetail="true"/>
 
-            <span class="field-label">Username</span>
+        <span class="field-label">Username</span>
 
-            <p:inputText
-                    value="#{loginBean.username}"
-                    required="true"/>
+        <p:inputText id="username"
+             value="#{loginBean.username}"
+             required="true"
+             requiredMessage="Username is required"/>
 
-            <span class="field-label">Password</span>
+<p:message for="username"/>
 
-            <p:password
-                    value="#{loginBean.password}"
-                    toggleMask="true"
-                    feedback="false"
-                    required="true"/>
+        <span class="field-label">Password</span>
 
-            <br/><br/>
+        <p:password id="password"
+            value="#{loginBean.password}"
+            required="true"
+            requiredMessage="Password is required"
+            toggleMask="true"
+            feedback="false"/>
 
-            <p:commandButton
-                    value="Login"
-                    action="#{loginBean.login()}"
-                    update="msg"
-                    styleClass="gold-btn"/>
+<p:message for="password"/>
 
-            <div class="auth-links">
+        <p:message for="password"/>
 
-                <h:link outcome="/public/register.xhtml"
-                        value="Create Account"/>
+        <br/><br/>
 
-            </div>
+<p:commandButton value="Login"
+                 action="#{loginBean.login}"
+                 update="msg"
+                 styleClass="gold-btn"/>
 
         </h:form>
 

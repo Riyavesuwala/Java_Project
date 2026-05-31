@@ -197,8 +197,28 @@ public class RestClient {
         webTarget.path(java.text.MessageFormat.format("updateWard/{0}/{1}/{2}/{3}", new Object[]{wardId, zoneId, wardName, status})).request().put(null);
     }
 
-    public void registerUser(String fullname, String email, String mobile, String username, String password, String societyId) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("registerUser/{0}/{1}/{2}/{3}/{4}/{5}", new Object[]{fullname, email, mobile, username, password, societyId})).request().post(null);
+    public Response registerUser(
+            String fullname,
+            String email,
+            String mobile,
+            String username,
+            String password,
+            String societyId)
+            throws ClientErrorException {
+
+        return webTarget.path(
+                java.text.MessageFormat.format(
+                        "registerUser/{0}/{1}/{2}/{3}/{4}/{5}",
+                        new Object[]{
+                            fullname,
+                            email,
+                            mobile,
+                            username,
+                            password,
+                            societyId
+                        }))
+                .request()
+                .post(null);
     }
 
     public void deleteDepartment(String id) throws ClientErrorException {

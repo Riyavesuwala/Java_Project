@@ -23,39 +23,100 @@
 
         <h:form>
 
-            <p:growl id="msg"/>
+            <p:growl id="msg" showDetail="true" life="4000"/>
 
             <span class="field-label">Full Name</span>
-            <p:inputText value="#{registerBean.fullname}" required="true"/>
+
+            <p:inputText id="fullname" value="#{registerBean.fullname}"
+                         required="true"
+                         requiredMessage="Full Name is required">
+
+                <f:validateRegex pattern="^[A-Za-z ]{3,50}$"/>
+
+            </p:inputText>
+
+            <p:message for="@previous"/>
 
             <span class="field-label">Email</span>
-            <p:inputText value="#{registerBean.email}" required="true"/>
+
+            <p:inputText id="email" value="#{registerBean.email}"
+                         required="true"
+                         requiredMessage="Email is required">
+
+                <f:validateRegex
+                    pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"/>
+
+            </p:inputText>
+
+            <p:message for="@previous"/>
 
             <span class="field-label">Mobile</span>
-            <p:inputText value="#{registerBean.mobile}" required="true"/>
+
+            <p:inputText id="mobile" value="#{registerBean.mobile}"
+                         required="true"
+                         requiredMessage="Mobile Number is required">
+
+                <f:validateRegex pattern="^[0-9]{10}$"/>
+
+            </p:inputText>
+
+            <p:message for="@previous"/>
 
             <span class="field-label">Username</span>
-            <p:inputText value="#{registerBean.username}" required="true"/>
+
+            <p:inputText id="username" value="#{registerBean.username}"
+                         required="true"
+                         requiredMessage="Username is required">
+
+                <f:validateLength minimum="4"
+                                  maximum="20"/>
+
+            </p:inputText>
+
+            <p:message for="@previous"/>
 
             <span class="field-label">Password</span>
-            <p:password value="#{registerBean.password}"
+
+            <p:password id="password" value="#{registerBean.password}"
+                        toggleMask="true"
+                        feedback="true"
+                        required="true"
+                        requiredMessage="Password is required">
+
+                <f:validateRegex
+                    pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$"/>
+
+            </p:password>
+
+            <p:message for="@previous"/>
+
+            <span class="field-label">Confirm Password</span>
+
+            <p:password id="confirmPassword"
+                        value="#{registerBean.confirmPassword}"
                         toggleMask="true"
                         feedback="false"
-                        required="true"/>
+                        required="true"
+                        requiredMessage="Confirm Password is required"/>
 
-            <span class="field-label">Society</span>
+            <p:message for="confirmPassword"/>
 
-            <p:selectOneMenu value="#{registerBean.societyId}">
+            <p:selectOneMenu id="society" value="#{registerBean.societyId}"
+                 required="true"
+                 requiredMessage="Please select a society">
 
-                <f:selectItem itemLabel="Select Society"
-                              itemValue=""/>
+            <f:selectItem itemLabel="Select Society"
+                          itemValue="#{null}"
+                          noSelectionOption="true"/>
 
-                <f:selectItems value="#{registerBean.societies}"
-                               var="s"
-                               itemLabel="#{s.societyName}"
-                               itemValue="#{s.societyId}"/>
+            <f:selectItems value="#{registerBean.societies}"
+                           var="s"
+                           itemLabel="#{s.societyName}"
+                           itemValue="#{s.societyId}"/>
 
             </p:selectOneMenu>
+
+            <p:message for="society"/>
 
             <br/><br/>
 

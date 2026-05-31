@@ -33,64 +33,70 @@ public class LoginBean implements Serializable {
     public LoginBean() {
     }
 
-    public String login() {
+   public String login() {
 
-        try {
+    try {
 
-            Users requestUser = new Users();
-
-            requestUser.setUsername(username);
-            requestUser.setPassword(password);
-
-            rs = rl.login(requestUser);
-
-            loggedInUser = rs.readEntity(Users.class);
-
-            if (loggedInUser != null) {
-
-                FacesContext.getCurrentInstance().addMessage(
-                        null,
-                        new FacesMessage(
-                                FacesMessage.SEVERITY_INFO,
-                                "Login Successful",
-                                null
-                        )
-                );
-
-                // Role Based Redirection
-
-                if (loggedInUser.getRole().equalsIgnoreCase("Admin")) {
-
-                    return "/admin/dashboard.xhtml?faces-redirect=true";
-                }
-
-                if (loggedInUser.getRole().equalsIgnoreCase("Officer")) {
-
-                    return "/officer/dashboard.xhtml?faces-redirect=true";
-                }
-
-                if (loggedInUser.getRole().equalsIgnoreCase("Citizen")) {
-
-                    return "/citizen/dashboard.xhtml?faces-redirect=true";
-                }
-            }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            FacesContext.getCurrentInstance().addMessage(
-                    null,
-                    new FacesMessage(
-                            FacesMessage.SEVERITY_ERROR,
-                            "Invalid Username or Password",
-                            null
-                    )
-            );
+        if (username == null || username.trim().isEmpty()) {
+            addError("Username is required");
+            return null;
         }
 
-        return null;
+        if (username.length() < 4) {
+            addError("Username must be at least 4 characters");
+            return null;
+        }
+
+        if (password == null || password.trim().isEmpty()) {
+            addError("Password is required");
+            return null;
+        }
+
+        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).{8,}$")) {
+            addError("Invalid password format");
+            return null;
+        }
+
+        Users requestUser = new Users();
+        requestUser.setUsername(username);
+        requestUser.setPassword(password);
+
+        Response rs = rl.login(requestUser);
+
+        if (rs.getStatus() != 200) {
+
+            addError("Invalid Username or Password");
+            return null;
+        }
+
+        loggedInUser = rs.readEntity(Users.class);
+
+        if (loggedInUser == null) {
+
+            addError("Invalid Username or Password");
+            return null;
+        }
+
+        if ("Admin".equalsIgnoreCase(loggedInUser.getRole())) {
+            return "/admin/dashboard.xhtml?faces-redirect=true";
+        }
+
+        if ("Officer".equalsIgnoreCase(loggedInUser.getRole())) {
+            return "/officer/dashboard.xhtml?faces-redirect=true";
+        }
+
+        if ("Citizen".equalsIgnoreCase(loggedInUser.getRole())) {
+            return "/citizen/dashboard.xhtml?faces-redirect=true";
+        }
+
+    } catch (Exception e) {
+
+        e.printStackTrace();
+        addError("Invalid Username or Password");
     }
+
+    return null;
+}
 
     public String logout() {
 
@@ -100,6 +106,18 @@ public class LoginBean implements Serializable {
 
         return "/login.xhtml?faces-redirect=true";
     }
+    
+    private void addError(String msg) {
+
+    FacesContext.getCurrentInstance().addMessage(
+            null,
+            new FacesMessage(
+                    FacesMessage.SEVERITY_ERROR,
+                    "Login Failed",
+                    msg
+            )
+    );
+}
 
     // Getters and Setters
 
@@ -127,3 +145,4 @@ public class LoginBean implements Serializable {
         this.loggedInUser = loggedInUser;
     }
 }
+

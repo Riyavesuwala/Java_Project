@@ -409,16 +409,34 @@ public class JakartaEE10Resource {
     
     @POST
     @Path("registerUser/{fullname}/{email}/{mobile}/{username}/{password}/{societyId}")
-    public void registerUser(@PathParam("fullname") String fullname,
-                             @PathParam("email") String email,
-                             @PathParam("mobile") String mobile,
-                             @PathParam("username") String username,
-                             @PathParam("password") String password,
-                             @PathParam("societyId") Integer societyId){
+    public Response registerUser(
+            @PathParam("fullname") String fullname,
+            @PathParam("email") String email,
+            @PathParam("mobile") String mobile,
+            @PathParam("username") String username,
+            @PathParam("password") String password,
+            @PathParam("societyId") Integer societyId) {
 
-        userBean.registerUser(fullname,email,mobile,username,password,societyId);
+        try {
+
+            userBean.registerUser(
+                    fullname,
+                    email,
+                    mobile,
+                    username,
+                    password,
+                    societyId);
+
+            return Response.ok("Registration Successful").build();
+
+        } catch (Exception e) {
+
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
-    
+
     @GET
     @Path("getUserById/{userId}")
     @Produces("application/json")
