@@ -1,6 +1,7 @@
 package CDIBean;
 
 import Client.RestClient;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Named;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
@@ -23,9 +24,15 @@ public class CitizenCDIBean implements Serializable {
 
     @Inject
     private LoginBean loginBean;
+    
+    @PostConstruct
+    public void init() {
+        System.out.println("Citizen Bean Initialized");
+        loadDashboard();
+    }
 
     public void loadDashboard() {
-
+        System.out.println("LOAD DASHBOARD CALLED");
         try {
 
             if (loginBean == null
@@ -36,27 +43,38 @@ public class CitizenCDIBean implements Serializable {
             Integer userId =
                     loginBean.getLoggedInUser().getUserId();
 
+            System.out.println("USER ID = " + userId);
+
+            System.out.println("TOKEN = " + loginBean.getToken());
+
             List<Object[]> complaints =
                     rl.getComplaintByUser(
                             List.class,
-                            String.valueOf(userId));
+                            String.valueOf(userId),
+                            loginBean.getToken());
 
-            if (complaints == null) {
-                return;
+            System.out.println("COMPLAINTS = " + complaints);
+
+            if (complaints != null) {
+                System.out.println("SIZE = " + complaints.size());
+
+                for (Object obj : complaints) {
+                    System.out.println(obj);
+                }
             }
-
-            totalComplaints = (long) complaints.size();
 
             assignedComplaints = 0L;
             resolvedComplaints = 0L;
             rejectedComplaints = 0L;
 
-            for (Object[] c : complaints) {
+            for (Object obj : complaints) {
 
-                String status =
-                        c[2] == null
-                                ? ""
-                                : c[2].toString();
+            List row = (List) obj;
+
+            String status =
+                    row.get(2) == null
+                            ? ""
+                            : row.get(2).toString();
 
                 if ("ASSIGNED".equalsIgnoreCase(status)
                         || "IN_PROGRESS".equalsIgnoreCase(status)) {

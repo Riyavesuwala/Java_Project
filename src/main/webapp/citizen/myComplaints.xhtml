@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+<f:metadata>
+    <f:viewAction action="#{authBean.checkCitizenAccess}" />
+</f:metadata>
+
+<h:head>
+    <title>My Grievances</title>
+
+    <h:outputStylesheet library="css"
+                        name="myComplaints.css"/>
+</h:head>
+
+<h:body>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <h1>My Grievances</h1>
+
+        <h:link outcome="/citizen/dashboard"
+                styleClass="back-btn">
+            ← Back to Dashboard
+        </h:link>
+
+    </div>
+
+    <div class="table-card">
+
+        <p:dataTable value="#{citizenBean.recentComplaints}"
+                     var="c"
+                     paginator="true"
+                     rows="10"
+                     emptyMessage="No grievances found">
+
+            <p:column headerText="Complaint Title">
+                #{c[0]}
+            </p:column>
+
+            <p:column headerText="Assigned Officer">
+                #{c[1]}
+            </p:column>
+
+            <p:column headerText="Status">
+                <span class="status-badge">
+                    #{c[2]}
+                </span>
+            </p:column>
+
+        </p:dataTable>
+
+    </div>
+
+</div>
+
+</h:body>
+</html>

@@ -4,10 +4,14 @@
  */
 package Client;
 
+import Entity.Users;
 import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.text.MessageFormat;
 
 /**
  * Jersey REST client generated for REST resource:JakartaEE10Resource
@@ -39,14 +43,61 @@ public class RestClient {
         return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public void resetPassword(String userId, String newPassword) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("resetPassword/{0}/{1}", new Object[]{userId, newPassword})).request().put(null);
-    }
+    public void resetPassword(String userId,
+                            String password,
+                            String token) {
 
-    public <T> T getUserById(Class<T> responseType, String userId) throws ClientErrorException {
+      webTarget.path("resetPassword")
+               .path(userId)
+               .path(password)
+               .request()
+               .header("Authorization",
+                       "Bearer " + token)
+               .put(Entity.text(""));
+  }
+
+    public <T> T getUserById(
+            Class<T> responseType,
+            String userId,
+            String token)
+            throws ClientErrorException {
+
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("getUserById/{0}", new Object[]{userId}));
-        return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+
+        resource = resource.path(
+                MessageFormat.format(
+                        "getUserById/{0}",
+                        userId));
+
+        return resource
+                .request(MediaType.APPLICATION_JSON)
+                .header("Authorization",
+                        "Bearer " + token)
+                .get(responseType);
+    }
+    
+    public void updateUser(
+            String userId,
+            String fullName,
+            String email,
+            String mobile,
+            String username,
+            String token)
+            throws ClientErrorException {
+
+        webTarget.path(
+                java.text.MessageFormat.format(
+                        "updateUser/{0}/{1}/{2}/{3}/{4}",
+                        new Object[]{
+                            userId,
+                            fullName,
+                            email,
+                            mobile,
+                            username
+                        }))
+                .request()
+                .header("Authorization", "Bearer " + token)
+                .put(jakarta.ws.rs.client.Entity.text(""));
     }
 
     public void createWard(String zoneId, String wardName, String status) throws ClientErrorException {
@@ -59,10 +110,47 @@ public class RestClient {
         return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public void createComplaint(String userId, String categoryId, String societyId, String wardId, String title, String description, String status, String priority) throws ClientErrorException {
-        webTarget.path(java.text.MessageFormat.format("createComplaint/{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}", new Object[]{userId, categoryId, societyId, wardId, title, description, status, priority})).request().post(null);
-    }
+    public void createComplaint(
+            String userId,
+            String categoryId,
+            String societyId,
+            String wardId,
+            String title,
+            String description,
+            String status,
+            String priority,
+            String token)
+            throws ClientErrorException {
 
+        String path = MessageFormat.format(
+                "createComplaint/{0}/{1}/{2}/{3}/{4}/{5}/{6}/{7}",
+                userId,
+                categoryId,
+                societyId,
+                wardId,
+                title,
+                description,
+                status,
+                priority);
+
+        System.out.println("TOKEN = " + token);
+
+        Response rs =
+                webTarget.path(path)
+                        .request()
+                        .header("Authorization", "Bearer " + token)
+                        .post(null);
+
+        System.out.println("Create Status = " + rs.getStatus());
+
+        System.out.println("FULL URL = "
+                + webTarget.path(path).getUri());
+
+        if (rs.hasEntity()) {
+            System.out.println(rs.readEntity(String.class));
+        }
+    }
+    
     public void deleteZone(String zoneId, String zoneName, String status, String corporationId) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("deleteZone/{0}/{1}/{2}/{3}", new Object[]{zoneId, zoneName, status, corporationId})).request().delete();
     }
@@ -119,49 +207,81 @@ public class RestClient {
         webTarget.path(java.text.MessageFormat.format("deleteSlaRule/{0}", new Object[]{slaId})).request().delete();
     }
 
-    public <T> T getComplaintByUser(Class<T> responseType, String userId) throws ClientErrorException {
+    public <T> T getComplaintByUser(
+                Class<T> responseType,
+                String userId,
+                String token)
+        {
+            WebTarget resource = webTarget;
+
+            resource = resource.path(
+                    MessageFormat.format(
+                            "getComplaintByUser/{0}",
+                            userId));
+
+            return resource.request(MediaType.APPLICATION_JSON)
+                    .header("Authorization","Bearer "+ token)
+                    .get(responseType);
+        }
+    
+    public <T> T getCitizenNotifications(
+        Class<T> responseType,
+        String userId,
+        String token) {
+
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("getComplaintByUser/{0}", new Object[]{userId}));
-        return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+
+        resource = resource.path(
+                MessageFormat.format(
+                        "citizenNotifications/{0}",
+                        userId));
+
+        return resource.request(MediaType.APPLICATION_JSON)
+                .header("Authorization",
+                        "Bearer " + token)
+                .get(responseType);
     }
     
     public <T> T getTotalComplaints(
-        Class<T> responseType,
-        String userId)
-        throws ClientErrorException {
+            Class<T> responseType,
+            String userId,
+            String token)
+            throws ClientErrorException {
 
-        WebTarget resource = webTarget;
+            WebTarget resource = webTarget;
 
-        resource = resource.path(
-                java.text.MessageFormat.format(
-                        "totalComplaints/{0}",
-                        userId));
+            resource = resource.path(
+                    java.text.MessageFormat.format(
+                            "totalComplaints/{0}",
+                            userId));
 
-        return resource.request(
-                jakarta.ws.rs.core.MediaType.APPLICATION_JSON)
-                .get(responseType);
-    }
+            return resource.request(MediaType.APPLICATION_JSON)
+                    .header("Authorization","Bearer "+ token)
+                    .get(responseType);
+        }
     
     public <T> T getAssignedComplaints(
-        Class<T> responseType,
-        String userId)
-        throws ClientErrorException {
+            Class<T> responseType,
+            String userId,
+            String token)
+            throws ClientErrorException {
 
-        WebTarget resource = webTarget;
+            WebTarget resource = webTarget;
 
-        resource = resource.path(
-                java.text.MessageFormat.format(
-                        "assignedComplaints/{0}",
-                        userId));
+            resource = resource.path(
+                    java.text.MessageFormat.format(
+                            "assignedComplaints/{0}",
+                            userId));
 
-        return resource.request(
-                jakarta.ws.rs.core.MediaType.APPLICATION_JSON)
-                .get(responseType);
-    }
+            return resource.request(MediaType.APPLICATION_JSON)
+                    .header("Authorization","Bearer "+ token)
+                    .get(responseType);
+        }
     
     public <T> T getResolvedComplaints(
         Class<T> responseType,
-        String userId)
+        String userId,
+        String token)
         throws ClientErrorException {
 
         WebTarget resource = webTarget;
@@ -171,14 +291,15 @@ public class RestClient {
                         "resolvedComplaints/{0}",
                         userId));
 
-        return resource.request(
-                jakarta.ws.rs.core.MediaType.APPLICATION_JSON)
-                .get(responseType);
+        return resource.request(MediaType.APPLICATION_JSON)
+                    .header("Authorization","Bearer "+ token)
+                    .get(responseType);
     }
     
     public <T> T getRejectedComplaints(
         Class<T> responseType,
-        String userId)
+        String userId,
+        String token)
         throws ClientErrorException {
 
         WebTarget resource = webTarget;
@@ -188,14 +309,15 @@ public class RestClient {
                         "rejectedComplaints/{0}",
                         userId));
 
-        return resource.request(
-                jakarta.ws.rs.core.MediaType.APPLICATION_JSON)
-                .get(responseType);
+        return resource.request(MediaType.APPLICATION_JSON)
+                    .header("Authorization","Bearer "+ token)
+                    .get(responseType);
     }
     
     public <T> T getRecentComplaints(
         Class<T> responseType,
-        String userId)
+        String userId,
+        String token)
         throws ClientErrorException {
 
         WebTarget resource = webTarget;
@@ -205,9 +327,9 @@ public class RestClient {
                         "recentComplaints/{0}",
                         userId));
 
-        return resource.request(
-                jakarta.ws.rs.core.MediaType.APPLICATION_JSON)
-                .get(responseType);
+        return resource.request(MediaType.APPLICATION_JSON)
+                    .header("Authorization","Bearer "+ token)
+                    .get(responseType);
     }
 
     public void createCategory(String categoryName, String departmentId) throws ClientErrorException {
@@ -232,10 +354,17 @@ public class RestClient {
         webTarget.path(java.text.MessageFormat.format("updateOfficer/{0}/{1}/{2}/{3}/{4}/{5}", new Object[]{officerId, userId, departmentId, zoneId, wardId, designation})).request().put(null);
     }
 
-    public <T> T getAllCategories(Class<T> responseType) throws ClientErrorException {
+    public <T> T getAllCategories(
+            Class<T> responseType,
+            String token) {
+
         WebTarget resource = webTarget;
         resource = resource.path("getAllCategories");
-        return resource.request(jakarta.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+
+        return resource.request(
+                jakarta.ws.rs.core.MediaType.APPLICATION_JSON)
+                .header("Authorization", "Bearer " + token)
+                .get(responseType);
     }
 
     public void deleteCategory(String id) throws ClientErrorException {

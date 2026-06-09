@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+<f:metadata>
+    <f:viewAction action="#{authBean.checkCitizenAccess}" />
+    <f:viewAction action="#{profileBean.loadProfile}" />
+</f:metadata>
+
+<h:head>
+
+    <title>My Profile</title>
+
+    <h:outputStylesheet library="css"
+                        name="profile.css"/>
+
+</h:head>
+
+<h:body>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <div>
+            <h1>My Profile</h1>
+            <p>View and update your account details.</p>
+        </div>
+
+        <h:link outcome="/citizen/dashboard"
+                styleClass="back-btn">
+
+            <i class="pi pi-arrow-left"></i>
+            Back to Dashboard
+
+        </h:link>
+
+    </div>
+
+    <div class="profile-card">
+
+       <h:form id="profileForm">
+
+            <!-- Full Name -->
+            <div class="field">
+
+                <label>Full Name</label>
+
+                <p:inputText id="fullName"
+                             value="#{profileBean.user.fullName}"
+                             rendered="#{profileBean.editMode}"
+                             required="true"
+                             requiredMessage="Please enter your full name."
+                             validatorMessage="Full Name should contain only letters and spaces (3-50 characters).">
+
+                    <f:validateRegex pattern="^[A-Za-z ]{3,50}$"/>
+
+                    <p:ajax event="keyup"
+                            update="fullNameMsg"/>
+
+                </p:inputText>
+
+                <h:outputText value="#{profileBean.user.fullName}"
+                              rendered="#{!profileBean.editMode}"/>
+
+                <p:message id="fullNameMsg"
+                           for="fullName"
+                           display="text"/>
+
+            </div>
+
+            <!-- Email -->
+            <div class="field">
+
+                <label>Email</label>
+
+                <p:inputText id="email"
+                             value="#{profileBean.user.email}"
+                             rendered="#{profileBean.editMode}"
+                             required="true"
+                             requiredMessage="Please enter your email address."
+                             validatorMessage="Please enter a valid email address.">
+
+                    <f:validateRegex pattern="^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"/>
+
+                    <p:ajax event="keyup"
+                            update="emailMsg"/>
+
+                </p:inputText>
+
+                <h:outputText value="#{profileBean.user.email}"
+                              rendered="#{!profileBean.editMode}"/>
+
+                <p:message id="emailMsg"
+                           for="email"
+                           display="text"/>
+
+            </div>
+
+            <!-- Mobile -->
+            <div class="field">
+
+                <label>Mobile Number</label>
+
+                <p:inputText id="mobile"
+                             value="#{profileBean.user.mobile}"
+                             rendered="#{profileBean.editMode}"
+                             required="true"
+                             requiredMessage="Please enter your mobile number."
+                             validatorMessage="Mobile number must contain exactly 10 digits.">
+
+                    <f:validateRegex pattern="^[0-9]{10}$"/>
+
+                    <p:ajax event="keyup"
+                            update="mobileMsg"/>
+
+                </p:inputText>
+
+                <h:outputText value="#{profileBean.user.mobile}"
+                              rendered="#{!profileBean.editMode}"/>
+
+                <p:message id="mobileMsg"
+                           for="mobile"
+                           display="text"/>
+
+            </div>
+
+            <!-- Username -->
+            <div class="field">
+
+                <label>Username</label>
+
+                <p:inputText id="username"
+                             value="#{profileBean.user.username}"
+                             rendered="#{profileBean.editMode}"
+                             required="true"
+                             requiredMessage="Please enter a username."
+                             validatorMessage="Username must be between 4 and 20 characters.">
+
+                    <f:validateLength minimum="4"
+                                      maximum="20"/>
+
+                    <p:ajax event="keyup"
+                            update="usernameMsg"/>
+
+                </p:inputText>
+
+                <h:outputText value="#{profileBean.user.username}"
+                              rendered="#{!profileBean.editMode}"/>
+
+                <p:message id="usernameMsg"
+                           for="username"
+                           display="text"/>
+
+            </div>
+
+            <!-- Buttons -->
+
+            <div class="btn-section">
+
+                <p:commandButton
+                        value="Edit Profile"
+                        rendered="#{!profileBean.editMode}"
+                        action="#{profileBean.enableEdit}"
+                        update="profileForm"
+                        styleClass="edit-btn"/>
+
+                <p:commandButton
+                        value="Update Profile"
+                        rendered="#{profileBean.editMode}"
+                        action="#{profileBean.updateProfile}"
+                        process="@form"
+                        update="profileForm"
+                        styleClass="update-btn"/>
+
+                <p:commandButton
+                        value="Cancel"
+                        rendered="#{profileBean.editMode}"
+                        action="#{profileBean.cancelEdit}"
+                        update="profileForm"
+                        styleClass="cancel-btn"
+                        immediate="true"/>
+
+            </div>
+
+        </h:form>
+    </div>
+
+</div>
+
+</h:body>
+
+</html>

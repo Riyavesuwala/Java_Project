@@ -133,6 +133,27 @@ public class UserBean implements UserBeanLocal {
     }
     
     @Override
+    public void updateUser(
+            Integer userId,
+            String fullName,
+            String email,
+            String mobile,
+            String username) {
+
+        Users user = em.find(Users.class, userId);
+
+        if (user != null) {
+
+            user.setFullName(fullName);
+            user.setEmail(email);
+            user.setMobile(mobile);
+            user.setUsername(username);
+
+            em.merge(user);
+        }
+    }
+    
+    @Override
     public Users forgotPassword(String username) {
         try{
             return em.createQuery(

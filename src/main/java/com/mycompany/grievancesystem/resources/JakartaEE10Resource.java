@@ -289,16 +289,37 @@ public class JakartaEE10Resource {
     @POST
     @Path("createComplaint/{userId}/{categoryId}/{societyId}/{wardId}/{title}/{description}/{status}/{priority}")
     @Secured(roles = {"Citizen"})
-    public void createComplaint(@PathParam("userId") Integer userId,
-                                @PathParam("categoryId") Integer categoryId,
-                                @PathParam("societyId") Integer societyId,
-                                @PathParam("wardId") Integer wardId,
-                                @PathParam("title") String title,
-                                @PathParam("description") String description,
-                                @PathParam("status") String status,
-                                @PathParam("priority") String priority)
-    {
-        complaintBean.createComplaint(userId, categoryId, societyId, wardId, title, description, priority);
+    public Response createComplaint(
+            @PathParam("userId") Integer userId,
+            @PathParam("categoryId") Integer categoryId,
+            @PathParam("societyId") Integer societyId,
+            @PathParam("wardId") Integer wardId,
+            @PathParam("title") String title,
+            @PathParam("description") String description,
+            @PathParam("status") String status,
+            @PathParam("priority") String priority) {
+
+        try {
+
+            complaintBean.createComplaint(
+                    userId,
+                    categoryId,
+                    societyId,
+                    wardId,
+                    title,
+                    description,
+                    priority);
+
+            return Response.ok("Complaint Created").build();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return Response.serverError()
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
     
     @GET
@@ -307,6 +328,7 @@ public class JakartaEE10Resource {
     @Secured(roles = {"Citizen"})
     public List<Object[]> getComplaintByUser(@PathParam("userId") Integer userId)
     {
+         System.out.println("GET COMPLAINT BY USER CALLED");
         return complaintBean.getComplaintByUserId(userId);
     }
     
@@ -330,7 +352,20 @@ public class JakartaEE10Resource {
     }
     
     @GET
+    @Path("citizenNotifications/{userId}")
+    @Secured(roles = {"Citizen"})
+    public Response citizenNotifications(
+            @PathParam("userId") Integer userId) {
+
+        List<Object[]> notifications =
+                complaintBean.getCitizenNotifications(userId);
+
+        return Response.ok(notifications).build();
+    }
+    
+    @GET
     @Path("totalComplaints/{userId}")
+    @Secured(roles = {"Citizen"})
     @Produces("application/json")
     public Long totalComplaints(
             @PathParam("userId") Integer userId) {
@@ -340,6 +375,7 @@ public class JakartaEE10Resource {
 
     @GET
     @Path("assignedComplaints/{userId}")
+    @Secured(roles = {"Citizen"})
     @Produces("application/json")
     public Long assignedComplaints(
             @PathParam("userId") Integer userId) {
@@ -349,6 +385,7 @@ public class JakartaEE10Resource {
 
     @GET
     @Path("resolvedComplaints/{userId}")
+    @Secured(roles = {"Citizen"})
     @Produces("application/json")
     public Long resolvedComplaints(
             @PathParam("userId") Integer userId) {
@@ -358,6 +395,7 @@ public class JakartaEE10Resource {
 
     @GET
     @Path("rejectedComplaints/{userId}")
+    @Secured(roles = {"Citizen"})
     @Produces("application/json")
     public Long rejectedComplaints(
             @PathParam("userId") Integer userId) {
@@ -367,6 +405,7 @@ public class JakartaEE10Resource {
 
     @GET
     @Path("recentComplaints/{userId}")
+    @Secured(roles = {"Citizen"})
     @Produces("application/json")
     public List<Complaint> recentComplaints(
             @PathParam("userId") Integer userId) {
@@ -435,10 +474,13 @@ public class JakartaEE10Resource {
 
         if (user != null) {
 
-            // generate JWT
-            String token = JwtUtil.generateToken(user.getUsername(),user.getRole());
+            String token = JwtUtil.generateToken(
+                    user.getUsername(),
+                    user.getRole());
 
-            return Response.ok(user).build();
+            return Response.ok(user)
+                    .header("Authorization", token)
+                    .build();
         }
 
         return Response.status(Response.Status.UNAUTHORIZED)
@@ -485,6 +527,26 @@ public class JakartaEE10Resource {
         return userBean.getUserById(userId);
     }
     
+    @PUT
+    @Path("updateUser/{userId}/{fullName}/{email}/{mobile}/{username}")
+    @Secured(roles = {"Admin", "Officer", "Citizen"})
+    public Response updateUser(
+            @PathParam("userId") Integer userId,
+            @PathParam("fullName") String fullName,
+            @PathParam("email") String email,
+            @PathParam("mobile") String mobile,
+            @PathParam("username") String username) {
+
+        userBean.updateUser(
+                userId,
+                fullName,
+                email,
+                mobile,
+                username);
+
+        return Response.ok().build();
+    }
+    
     @POST
     @Path("forgotPassword/{username}")
     @Produces("application/json")
@@ -494,6 +556,7 @@ public class JakartaEE10Resource {
     
     @PUT
     @Path("resetPassword/{userId}/{newPassword}")
+    @Secured(roles = {"Admin", "Officer", "Citizen"})
     public void resetPassword(@PathParam("userId") int userId,
                               @PathParam("newPassword") String newPassword){
 

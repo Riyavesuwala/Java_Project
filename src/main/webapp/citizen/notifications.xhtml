@@ -1,0 +1,97 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="jakarta.faces.core">
+
+<f:metadata>
+    <f:viewAction action="#{authBean.checkCitizenAccess}" />
+</f:metadata>
+
+<h:head>
+
+    <title>Notifications</title>
+
+    <h:outputStylesheet library="css"
+                        name="notifications.css"/>
+
+</h:head>
+
+<h:body>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <h2>
+            Notifications
+        </h2>
+
+        <h:link outcome="/citizen/dashboard"
+                styleClass="back-btn">
+
+            <i class="pi pi-arrow-left"></i>
+            Back to Dashboard
+
+        </h:link>
+
+    </div>
+
+    <ui:repeat value="#{notificationBean.notifications}"
+                var="n"
+                xmlns:ui="jakarta.faces.facelets">
+
+         <div class="notification-card">
+
+             <div class="notification-icon">
+                 <i class="pi pi-bell"></i>
+             </div>
+
+             <div class="notification-content">
+
+                 <div class="notification-title">
+                     #{n[0]}
+                 </div>
+
+                 <div class="notification-message">
+                     #{n[1]}
+                 </div>
+
+                 <div class="notification-footer">
+
+                     <span class="officer">
+                         <i class="pi pi-user"></i>
+                         #{n[2]}
+                     </span>
+
+                     <span class="date">
+                         <i class="pi pi-clock"></i>
+                         #{n[3]}
+                     </span>
+
+                 </div>
+
+             </div>
+
+         </div>
+
+     </ui:repeat>
+
+     <h:panelGroup rendered="#{empty notificationBean.notifications}">
+         <div class="empty-notification">
+
+             <i class="pi pi-bell-slash"></i>
+
+             <h3>No Notifications</h3>
+
+             <p>You haven't received any updates yet.</p>
+
+         </div>
+     </h:panelGroup>
+
+</div>
+
+</h:body>
+
+</html>

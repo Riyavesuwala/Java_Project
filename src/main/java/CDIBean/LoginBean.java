@@ -21,6 +21,8 @@ public class LoginBean implements Serializable {
 
     private Users loggedInUser;
 
+    private String token;
+
     private RestClient rl = new RestClient();
 
     public LoginBean() {
@@ -30,7 +32,6 @@ public class LoginBean implements Serializable {
 
         try {
 
-            // Username Validation
             if (username == null || username.trim().isEmpty()) {
                 addError("Username is required");
                 return null;
@@ -41,7 +42,6 @@ public class LoginBean implements Serializable {
                 return null;
             }
 
-            // Password Validation
             if (password == null || password.trim().isEmpty()) {
                 addError("Password is required");
                 return null;
@@ -60,29 +60,30 @@ public class LoginBean implements Serializable {
             requestUser.setPassword(password);
 
             Response rs = rl.login(requestUser);
-            
+
             System.out.println("Status Code = " + rs.getStatus());
 
             if (rs.getStatus() == 404) {
-
                 addError("User not found. Please register first.");
                 return null;
             }
 
             if (rs.getStatus() == 401) {
-
                 addError("Incorrect password.");
                 return null;
             }
 
             if (rs.getStatus() != 200) {
-
                 addError("Unable to login. Please try again.");
                 return null;
             }
 
-            
+            token = rs.getHeaderString("Authorization");
+
+            System.out.println("TOKEN = " + token);
+
             loggedInUser = rs.readEntity(Users.class);
+
             System.out.println("Name = " + loggedInUser.getFullName());
             System.out.println("Email = " + loggedInUser.getEmail());
             System.out.println("Mobile = " + loggedInUser.getMobile());
@@ -94,8 +95,6 @@ public class LoginBean implements Serializable {
                 return null;
             }
 
-            // Store in Session
-
             ExternalContext ec =
                     FacesContext.getCurrentInstance()
                             .getExternalContext();
@@ -104,6 +103,12 @@ public class LoginBean implements Serializable {
                     ec.getSessionMap();
 
             session.put("loggedInUser", loggedInUser);
+            System.out.println("TOKEN = " + token);
+            System.out.println("TOKEN NULL");
+            session.put("token", token);
+            
+            System.out.println(
+        ec.getSessionMaxInactiveInterval());
 
             FacesContext.getCurrentInstance()
                     .addMessage(
@@ -115,8 +120,6 @@ public class LoginBean implements Serializable {
                                     + loggedInUser.getFullName()
                             )
                     );
-
-            // Role Based Navigation
 
             if ("Admin".equalsIgnoreCase(
                     loggedInUser.getRole())) {
@@ -148,6 +151,9 @@ public class LoginBean implements Serializable {
 
     public String logout() {
 
+        loggedInUser = null;
+        token = null;
+
         FacesContext.getCurrentInstance()
                 .getExternalContext()
                 .invalidateSession();
@@ -166,10 +172,6 @@ public class LoginBean implements Serializable {
                 )
         );
     }
-
-    // =========================
-    // Getters & Setters
-    // =========================
 
     public String getUsername() {
         return username;
@@ -193,5 +195,13 @@ public class LoginBean implements Serializable {
 
     public void setLoggedInUser(Users loggedInUser) {
         this.loggedInUser = loggedInUser;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

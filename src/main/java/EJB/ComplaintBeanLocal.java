@@ -51,4 +51,6 @@ public interface ComplaintBeanLocal {
     Long getRejectedComplaintsByUser(Integer userId);
 
     List<Complaint> getRecentComplaintsByUser(Integer userId);
+    
+    List<Object[]> getCitizenNotifications(Integer userId);
 }

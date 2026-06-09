@@ -39,40 +39,53 @@
 
         <div class="menu">
 
-            <a href="#" class="menu-item active">
+            <h:link outcome="/citizen/dashboard"
+                    styleClass="menu-item active">
+
                 <i class="pi pi-home"></i>
                 <span>Dashboard</span>
-            </a>
 
-            <a href="raiseComplaint.xhtml" class="menu-item">
+            </h:link>
+
+            <h:link outcome="/citizen/raiseComplaint"
+                    styleClass="menu-item">
+
                 <i class="pi pi-plus-circle"></i>
                 <span>Raise Grievance</span>
-            </a>
 
-            <a href="myComplaints.xhtml" class="menu-item">
+            </h:link>
+
+            <h:link outcome="/citizen/myComplaints"
+                    styleClass="menu-item">
+
                 <i class="pi pi-file"></i>
                 <span>My Grievances</span>
-            </a>
 
-            <a href="notifications.xhtml" class="menu-item">
+            </h:link>
+
+            <h:link outcome="/citizen/notifications"
+                    styleClass="menu-item">
+
                 <i class="pi pi-bell"></i>
                 <span>Notifications</span>
-            </a>
 
-            <a href="profile.xhtml" class="menu-item">
+            </h:link>
+
+            <h:link outcome="/citizen/profile"
+                    styleClass="menu-item">
+
                 <i class="pi pi-user"></i>
                 <span>Profile</span>
-            </a>
 
-            <a href="changePassword.xhtml" class="menu-item">
+            </h:link>
+
+            <h:link outcome="/citizen/changePassword"
+                    styleClass="menu-item">
+
                 <i class="pi pi-lock"></i>
                 <span>Change Password</span>
-            </a>
 
-            <a href="faq.xhtml" class="menu-item">
-                <i class="pi pi-question-circle"></i>
-                <span>FAQs</span>
-            </a>
+            </h:link>
 
         </div>
 
@@ -129,7 +142,7 @@
             <div class="stat-card">
                 <i class="pi pi-file"></i>
                 <h3>
-                    #{citizenDashboardBean.totalComplaints}
+                    #{citizenBean.totalComplaints}
                 </h3>
                 <span>Total Complaints</span>
             </div>
@@ -137,7 +150,7 @@
             <div class="stat-card success">
                 <i class="pi pi-check-circle"></i>
                 <h3>
-                    #{citizenDashboardBean.resolvedComplaints}
+                    #{citizenBean.resolvedComplaints}
                 </h3>
                 <span>Resolved</span>
             </div>
@@ -145,7 +158,7 @@
             <div class="stat-card warning">
                 <i class="pi pi-clock"></i>
                 <h3>
-                    #{citizenDashboardBean.pendingComplaints}
+                    #{citizenBean.assignedComplaints}
                 </h3>
                 <span>In Progress</span>
             </div>
@@ -153,7 +166,7 @@
             <div class="stat-card danger">
                 <i class="pi pi-times-circle"></i>
                 <h3>
-                    #{citizenDashboardBean.rejectedComplaints}
+                    #{citizenBean.rejectedComplaints}
                 </h3>
                 <span>Rejected</span>
             </div>
@@ -167,13 +180,12 @@
 
                 <h3>My Recent Grievances</h3>
 
-                <a href="myComplaints.xhtml">
-                    View All
-                </a>
+                <h:link outcome="/citizen/myComplaints"
+                        value="View All"/>
 
             </div>
 
-            <p:dataTable value="#{citizenDashboardBean.recentComplaints}"
+            <p:dataTable value="#{citizenBean.recentComplaints}"
              var="c"
              paginator="true"
              rows="5">

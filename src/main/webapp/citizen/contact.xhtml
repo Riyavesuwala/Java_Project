@@ -1,11 +1,83 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="jakarta.faces.html">
-    <h:head>
-        <title>Facelet Title</title>
-    </h:head>
-    <h:body>
-        Hello from Facelets
-    </h:body>
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core">
+
+<f:metadata>
+    <f:viewAction action="#{authBean.checkCitizenAccess}" />
+</f:metadata>
+    
+<h:head>
+    <title>Contact &amp; Support</title>
+
+    <h:outputStylesheet library="css"
+                        name="support.css"/>
+</h:head>
+
+<h:body>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Contact &amp; Support</h1>
+            <p>Need help? We're here to assist you.</p>
+        </div>
+
+        <h:link outcome="/citizen/dashboard"
+                styleClass="back-btn">
+
+            ← Back to Dashboard
+
+        </h:link>
+
+    </div>
+
+    <div class="support-card">
+
+        <h2>About the System</h2>
+
+        <p>
+            The Citizen Grievance Management System is designed to provide
+            citizens with a transparent and efficient platform for raising,
+            tracking, and resolving grievances related to society and community
+            services.
+        </p>
+
+        <h2>Features Available</h2>
+
+        <ul>
+            <li>Register and manage citizen accounts</li>
+            <li>Raise complaints and grievances</li>
+            <li>Track complaint status in real time</li>
+            <li>View complaint history</li>
+            <li>Update profile information</li>
+            <li>Change account password securely</li>
+            <li>Receive updates on complaint progress</li>
+        </ul>
+
+        <h2>Support Information</h2>
+
+        <div class="info-box">
+
+            <p><strong>Email:</strong> support@grievancesystem.com</p>
+
+            <p><strong>Helpline:</strong> +91 98765 43210</p>
+
+            <p><strong>Office Hours:</strong> Monday - Friday (9:00 AM - 6:00 PM)</p>
+
+            <p><strong>Address:</strong> Citizen Service Center, Surat, Gujarat, India</p>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+</h:body>
+
 </html>

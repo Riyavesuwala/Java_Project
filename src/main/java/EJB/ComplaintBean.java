@@ -103,8 +103,9 @@ public class ComplaintBean implements ComplaintBeanLocal {
             zone.getComplaintCollection().add(complaint);
 
             em.persist(complaint);
-
+            em.flush();
             Integer generatedId = complaint.getComplaintId();
+            System.out.println("Generated Complaint ID = " + generatedId);
 
             Officers officer = assignToWardOfficer(generatedId);
 
@@ -319,4 +320,17 @@ public class ComplaintBean implements ComplaintBeanLocal {
                 .getResultList();
     }
 
+    public List<Object[]> getCitizenNotifications(Integer userId) {
+
+        return em.createQuery(
+                "SELECT c.title, r.message, u.fullName, r.repliedAt " +
+                "FROM ComplaintReply r " +
+                "JOIN r.complaintId c " +
+                "JOIN r.repliedBy u " +
+                "WHERE c.citizenId.userId = :uid " +
+                "ORDER BY r.repliedAt DESC",
+                Object[].class)
+                .setParameter("uid", userId)
+                .getResultList();
+    }
 }

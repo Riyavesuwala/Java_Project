@@ -1,0 +1,148 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:p="http://primefaces.org/ui">
+
+<f:metadata>
+    <f:viewAction action="#{authBean.checkCitizenAccess}" />
+    <f:viewAction action="#{raiseComplaintBean.loadPage}" />
+</f:metadata>
+
+<h:head>
+    <title>Raise Complaint</title>
+
+    <h:outputStylesheet library="css"
+                        name="raiseComplaint.css"/>
+</h:head>
+
+<h:body>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <div>
+            <h1>Raise Complaint</h1>
+            <p>Submit your grievance for quick resolution.</p>
+        </div>
+        
+            <h:button value="← Back to Dashboard"
+                      outcome="/citizen/dashboard"
+                      styleClass="back-dashboard-btn"/>
+
+    </div>
+
+
+    <div class="form-card">
+
+        <h:form>
+
+            <div>
+
+                <div class="field">
+                    <label>Complaint Title</label>
+
+                    <p:inputText id="title"
+                            value="#{raiseComplaintBean.title}"
+                            required="true"
+                            requiredMessage="Please enter complaint title"
+                            styleClass="input-field">
+
+                   <p:ajax event="keyup" update="titleMsg"/>
+               </p:inputText>
+
+               <p:message id="titleMsg"
+                          for="title"
+                          display="text"/>
+                </div>
+                <div class="field">
+                    <label>Category</label>
+
+                    <p:selectOneMenu id="category"
+                                    value="#{raiseComplaintBean.categoryId}"
+                                    required="true"
+                                    requiredMessage="Please select a category"
+                                    styleClass="input-field">
+
+                       <f:selectItem itemLabel="Select Category"
+                                     itemValue="#{null}"
+                                     noSelectionOption="true"/>
+
+                       <f:selectItems value="#{raiseComplaintBean.categories}"
+                                      var="c"
+                                      itemLabel="#{c.categoryName}"
+                                      itemValue="#{c.categoryId}" />
+
+                       <p:ajax event="change" update="categoryMsg"/>
+                    </p:selectOneMenu>
+
+                    <p:message id="categoryMsg"
+                               for="category"
+                               display="text"/>
+                                    </div>
+
+               <div class="field">
+                    <label>Priority</label>
+
+                    <p:selectOneMenu id="priority"
+                                    value="#{raiseComplaintBean.priority}"
+                                    required="true"
+                                    requiredMessage="Please select priority"
+                                    styleClass="input-field">
+
+                       <f:selectItem itemLabel="Select Priority"
+                                     itemValue="#{null}"
+                                     noSelectionOption="true"/>
+
+                       <f:selectItem itemLabel="Low" itemValue="LOW"/>
+                       <f:selectItem itemLabel="Medium" itemValue="MEDIUM"/>
+                       <f:selectItem itemLabel="High" itemValue="HIGH"/>
+
+                       <p:ajax event="change" update="priorityMsg"/>
+                   </p:selectOneMenu>
+
+                   <p:message id="priorityMsg"
+                              for="priority"
+                              display="text"/>
+                </div>
+
+            </div>
+
+            <div class="field full-width">
+
+                <label>Description</label>
+
+                <p:inputTextarea id="description"
+                                value="#{raiseComplaintBean.description}"
+                                rows="8"
+                                required="true"
+                                requiredMessage="Please enter complaint description"
+                                styleClass="input-field">
+
+                   <p:ajax event="keyup" update="descriptionMsg"/>
+               </p:inputTextarea>
+
+               <p:message id="descriptionMsg"
+                          for="description"
+                          display="text"/>
+                           </div>
+            
+            <div class="btn-section">
+
+                <p:commandButton value="Submit Complaint"
+                                 action="#{raiseComplaintBean.submitComplaint}"
+                                 update="@form"
+                                 styleClass="submit-btn"/>
+
+            </div>
+
+        </h:form>
+
+    </div>
+
+</div>
+</h:body>
+</html>

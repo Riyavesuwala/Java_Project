@@ -21,6 +21,11 @@ public interface UserBeanLocal {
                              String password,
                              Integer societyId);
     Users getUserById(int userId);
+    public void updateUser(Integer userId,
+                            String fullName,
+                            String email,
+                            String mobile,
+                            String username);
     public Users forgotPassword(String username);
     public void resetPassword(int userId, String newPassword);
     public void submitFeedback(int complaintId,String rating,String comments);
